@@ -37,7 +37,7 @@ export function HomeScreen() {
         }, 700);
       }}
       header={
-        <header className="flex items-center gap-3 pb-2 pl-4 pr-36 pt-2">
+        <header className="flex h-16 items-center gap-3 pl-4 pr-36">
           <Logo className="h-11 w-11" label="All Eyez Open" />
           <div className="min-w-0">
             <p className="footnote text-muted-foreground">{name ? "Hello," : "Welcome"}</p>

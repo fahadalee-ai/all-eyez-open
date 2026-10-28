@@ -851,12 +851,12 @@ export function Celebration({
 }) {
   return (
     <div>
-      <div className="relative h-44 overflow-hidden rounded-lg">
+      <div className="relative h-52 overflow-hidden rounded-lg">
         <Photo name={image} alt="" className="absolute inset-0 h-full w-full" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#231f20] via-[#4a1d72]/72 to-[#231f20]/20" />
-        <div className="absolute inset-x-0 bottom-0 p-4 text-white">
+        <div className="absolute inset-x-0 bottom-0 px-4 pb-14 pt-4 text-white">
           <p className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-white/80">{kicker}</p>
-          <p className="mt-1 text-[1.65rem] font-bold leading-tight">{title}</p>
+          <p className="mt-1 text-[1.65rem] font-bold leading-none">{title}</p>
         </div>
       </div>
       <div className="relative z-10 -mt-8 rounded-lg bg-card px-4 pb-5 pt-4 text-center shadow-card">

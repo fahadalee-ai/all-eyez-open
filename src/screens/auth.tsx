@@ -137,8 +137,8 @@ function AuthShell({
         <header className="relative overflow-hidden">
           <Photo name="onboarding-sunrise" alt="" className="absolute inset-0 h-full w-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-b from-[#231f20]/50 via-[#4a1d72]/78 to-[var(--background)]" />
-          <div className="relative px-4 pb-1 pt-1">
-            <div className="flex h-11 items-center">
+          <div className="relative px-4 pb-1">
+            <div className="flex h-16 items-center">
               {back ? (
                 <button type="button" aria-label="Back" className="grid h-11 w-11 place-items-center rounded-full bg-black/35 text-white backdrop-blur-md" onClick={goBack}>
                   <ChevronLeft size={26} />

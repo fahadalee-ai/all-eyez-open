@@ -83,7 +83,7 @@ export function MobileRoot({ children }: { children: ReactNode }) {
         {showTabs && !app.disguised && !app.locked && <TabBar path={path} es={es} badge={app.unreadChat} />}
         {!app.disguised && <QuickExit es={es} />}
         {showTip && (
-          <div className="absolute right-3 top-14 z-30 w-64 rounded-2xl bg-ink p-3 text-white shadow-card">
+          <div className="absolute right-3 top-[4.25rem] z-30 w-64 rounded-2xl bg-ink p-3 text-white shadow-card">
             <p className="text-[0.9375rem] font-semibold leading-snug">
               {es ? "Salida rápida" : "Quick Exit"}
             </p>
@@ -345,38 +345,41 @@ export function Page({
   return (
     <div className="flex h-full min-h-0 w-full min-w-0 flex-col bg-background">
       {header ?? (
-        back ? (
-          <header className="shrink-0 border-b border-divider bg-card">
-            <div className="grid h-12 grid-cols-[1fr_auto_1fr] items-center pr-28">
-              <button
-                type="button"
-                onClick={() => {
-                  haptic(8);
-                  goBack();
-                }}
-                className="inline-flex min-h-11 items-center gap-0.5 justify-self-start pl-1 pr-2 text-link active:opacity-55"
-              >
-                <ChevronLeft size={28} strokeWidth={2.25} aria-hidden />
-                <span className="text-[1.0625rem]">Back</span>
-              </button>
+        <header className={cn("shrink-0", back || !large ? "border-b border-divider bg-card" : "px-4")}>
+          {back || !large ? (
+            <div className="relative h-16">
+              <div className="flex h-full items-center">
+                {back ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      haptic(8);
+                      goBack();
+                    }}
+                    className="relative z-10 inline-flex h-full items-center gap-0.5 pl-1 pr-2 text-link active:opacity-55"
+                  >
+                    <ChevronLeft size={28} strokeWidth={2.25} aria-hidden />
+                    <span className="text-[1.0625rem]">Back</span>
+                  </button>
+                ) : (
+                  <span />
+                )}
+                <div className="relative z-10 ml-auto flex h-full items-center pr-36">{right}</div>
+              </div>
               {showInline ? (
-                <h1 className="max-w-[10.5rem] truncate text-center text-[1.0625rem] font-semibold">{title}</h1>
-              ) : (
-                <span />
-              )}
-              <div className="flex items-center justify-self-end">{right}</div>
+                <h1 className="pointer-events-none absolute inset-0 flex items-center justify-center px-[7.5rem]">
+                  <span className="truncate text-[1.0625rem] font-semibold">{title}</span>
+                </h1>
+              ) : null}
             </div>
-            {large && !compact && title && <h1 className="large-title px-4 pb-3">{title}</h1>}
-          </header>
-        ) : (
-          <header className="shrink-0 px-4 pt-1">
-            <div className="flex h-11 items-center gap-1 pr-28">
-              {title && (!large || compact) ? <h1 className="truncate text-[1.0625rem] font-semibold">{title}</h1> : <span className="flex-1" />}
-              <div className="ml-auto flex items-center">{right}</div>
+          ) : (
+            <div className="flex h-14 items-center pr-36">
+              <span className="flex-1" />
+              <div className="flex items-center">{right}</div>
             </div>
-            {large && !compact && title && <h1 className="large-title pb-2 pr-2">{title}</h1>}
-          </header>
-        )
+          )}
+          {large && !compact && title && <h1 className={cn("large-title pb-3", back || !large ? "px-4" : "pr-2")}>{title}</h1>}
+        </header>
       )}
       <div
         ref={scroller}
