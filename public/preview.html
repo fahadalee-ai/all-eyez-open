@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>All Eyez Open</title>
-  <link rel="icon" type="image/png" href="/favicon.png" />
-  <link rel="apple-touch-icon" href="/favicon.png" />
+  <title>Navegando</title>
+  <link rel="icon" href="/favicon.ico" sizes="48x48" />
+  <link rel="icon" href="/favicon.png" type="image/png" sizes="192x192" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <style>
     :root {
       --bg: #0b0b0c;
@@ -98,7 +99,7 @@
         width=390/427=91.335%, height=844/881=95.801%.
       */
     .safariScreen {
-      display: block;
+      display: none;
       position: absolute;
       left: 4.216%;
       top: 2.043%;
@@ -111,7 +112,11 @@
       background: var(--screenBg);
     }
 
-    .foScreen {
+    html.ios .safariScreen {
+      display: block;
+    }
+
+    html.ios .foScreen {
       display: none;
     }
 
@@ -150,12 +155,6 @@
       background: #fff;
       scrollbar-width: none;
       -ms-overflow-style: none;
-    }
-
-    iframe::-webkit-scrollbar {
-      display: none;
-      width: 0;
-      height: 0;
     }
   </style>
 </head>
@@ -284,11 +283,19 @@
   </div>
 
     <script>
+      const PRODUCTION_URL = "https://demo.sourapps.com/";
+
     function defaultAppUrl() {
       if (location.protocol === "file:") {
-        return "http://127.0.0.1:5173/";
+        return "http://localhost:8080/";
       }
-      return location.origin + "/";
+      if (location.pathname.endsWith("preview.html")) {
+        return location.origin + location.pathname.replace(/preview\.html$/, "");
+      }
+      if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
+        return location.origin + "/";
+      }
+      return PRODUCTION_URL;
     }
 
     function safeParseUrl(maybeUrl) {
@@ -311,9 +318,12 @@
       const overrideUrl = params.get("url");
       const finalUrl = safeParseUrl(overrideUrl) || defaultAppUrl();
 
-      document.getElementById("previewFrameSafari").src = finalUrl;
-      var frame = document.getElementById("previewFrame");
-      if (frame) frame.src = finalUrl;
+      // Set src only on the iframe that will actually be visible.
+      if (isIOS) {
+        document.getElementById("previewFrameSafari").src = finalUrl;
+      } else {
+        document.getElementById("previewFrame").src = finalUrl;
+      }
 
       // Keep the Safari fallback screen geometry proportional on resize.
       // foreignObject screen: x=18,y=18,w=390,h=844 => pad-top=62/844, pad-bottom=34/844, radius=55/390
@@ -328,10 +338,12 @@
         safariEl.style.setProperty("--ss-pad-bottom", Math.round(padBot) + "px");
         safariEl.style.setProperty("--ss-radius", Math.round(radius) + "px");
       }
-      updateSafariMetrics();
-      window.addEventListener("resize", function () {
-        requestAnimationFrame(updateSafariMetrics);
-      }, { passive: true });
+      if (isIOS) {
+        updateSafariMetrics();
+        window.addEventListener("resize", function () {
+          requestAnimationFrame(updateSafariMetrics);
+        }, { passive: true });
+      }
 
       // Live clock in the status bar.
       const timeEl = document.getElementById("statusTime");
