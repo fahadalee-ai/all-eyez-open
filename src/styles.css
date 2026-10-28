@@ -1,0 +1,424 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@theme inline {
+  --radius: 0.75rem;
+  --radius-sm: 0.75rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 0.75rem;
+  --radius-3xl: 0.75rem;
+  --radius-4xl: 0.75rem;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-dark: var(--primary-600);
+  --color-primary-600: var(--primary-600);
+  --color-primary-100: var(--primary-100);
+  --color-primary-50: var(--primary-50);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-dim: var(--dim);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-ink: var(--ink);
+  --color-surface: var(--surface);
+  --color-border: var(--border-light);
+  --color-divider: var(--divider);
+  --color-link: var(--link);
+  --color-input: var(--border-light);
+  --color-ring: var(--primary);
+
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", system-ui, sans-serif;
+
+  --shadow-card: var(--shadow);
+}
+
+:root {
+  color-scheme: light;
+  --primary: #782baf;
+  --primary-foreground: #ffffff;
+  --primary-600: #5c2088;
+  --primary-100: #efe3f7;
+  --primary-50: #f8f2fc;
+  --ink: #231f20;
+  --background: #faf8fc;
+  --foreground: #231f20;
+  --card: #ffffff;
+  --card-foreground: #231f20;
+  --popover: #ffffff;
+  --popover-foreground: #231f20;
+  --secondary: #efe3f7;
+  --secondary-foreground: #5c2088;
+  --muted: #f3eef6;
+  --muted-foreground: #5e5666;
+  --dim: #5e5666;
+  --accent: #efe3f7;
+  --accent-foreground: #5c2088;
+  --destructive: #b42323;
+  --destructive-foreground: #ffffff;
+  --success: #1f7a52;
+  --warning: #8a6200;
+  --danger: #b42323;
+  --surface: #ffffff;
+  --divider: #e6e0eb;
+  --border-light: #e6e0eb;
+  --border-dark: #d9d0e0;
+  --link: #5c2088;
+  --shadow: 0 2px 12px rgba(35, 31, 32, 0.08);
+  --tab: color-mix(in srgb, #faf8fc 84%, transparent);
+  --overlay: rgba(35, 31, 32, 0.4);
+}
+
+.dark {
+  color-scheme: dark;
+  --primary: #8e46c9;
+  --primary-foreground: #ffffff;
+  --primary-600: #f0d9ff;
+  --primary-100: #3a2c46;
+  --primary-50: #322833;
+  --ink: #f7f3f8;
+  --background: #231f20;
+  --foreground: #f7f3f8;
+  --card: #2c2729;
+  --card-foreground: #f7f3f8;
+  --popover: #2c2729;
+  --popover-foreground: #f7f3f8;
+  --secondary: #3a2c46;
+  --secondary-foreground: #f0d9ff;
+  --muted: #342e31;
+  --muted-foreground: #d2c8d4;
+  --dim: #d2c8d4;
+  --accent: #3a2c46;
+  --accent-foreground: #f0d9ff;
+  --destructive: #ff8d8d;
+  --destructive-foreground: #2a0d0d;
+  --success: #8ee0b5;
+  --warning: #f0cc70;
+  --danger: #ff8d8d;
+  --surface: #2c2729;
+  --divider: #433c41;
+  --border-light: #433c41;
+  --border-dark: #564c53;
+  --link: #e4c6f8;
+  --shadow: 0 2px 14px rgba(0, 0, 0, 0.35);
+  --tab: color-mix(in srgb, #231f20 78%, transparent);
+  --overlay: rgba(0, 0, 0, 0.55);
+}
+
+.contrast {
+  --foreground: #14080f;
+  --muted-foreground: #3a3140;
+  --link: #4b1578;
+  --primary: #641e96;
+  --divider: #c9bdd2;
+}
+
+.dark.contrast {
+  --background: #120e10;
+  --foreground: #ffffff;
+  --muted-foreground: #f3e9f6;
+  --card: #241e22;
+  --link: #f6e5ff;
+  --divider: #6d6270;
+}
+
+@layer base {
+  * {
+    border-color: var(--divider);
+  }
+
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+    max-width: 100%;
+    overflow: hidden;
+    background: #1c1a1d;
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    scrollbar-width: none;
+  }
+
+  * {
+    scrollbar-width: none;
+  }
+
+  *::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  html {
+    font-size: 16px;
+  }
+
+  html[data-text="large"] {
+    font-size: 18px;
+  }
+
+  html[data-text="xl"] {
+    font-size: 20px;
+  }
+
+  html[data-text="xxl"] {
+    font-size: 23px;
+  }
+
+  body {
+    overflow: hidden;
+  }
+
+  button,
+  a,
+  input,
+  textarea,
+  select {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--link);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: var(--primary-100);
+    color: var(--foreground);
+  }
+}
+
+.app-shell {
+  position: fixed;
+  inset: 0;
+  margin: 0 auto;
+  width: min(100%, 480px);
+  height: 100dvh;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.app-shell img {
+  max-width: 100%;
+}
+
+.quick-exit {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  z-index: 40;
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility large-title {
+  font-size: 2.125rem;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.022em;
+}
+
+@utility title-1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.018em;
+}
+
+@utility title-2 {
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.014em;
+}
+
+@utility headline {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+@utility body-text {
+  font-size: 1.0625rem;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+@utility callout {
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+@utility subhead {
+  font-size: 0.9375rem;
+  line-height: 1.4;
+}
+
+@utility footnote {
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+@utility caption {
+  font-size: 0.75rem;
+  line-height: 1.35;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+@keyframes logo-in {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes glow-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 24px rgba(120, 43, 175, 0.28);
+  }
+  50% {
+    box-shadow: 0 0 56px rgba(120, 43, 175, 0.62);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes sheet-in {
+  from {
+    transform: translateY(110%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes dot {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+  40% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes check-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes confetti {
+  0% {
+    transform: translateY(-10px) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(140px) rotate(220deg);
+    opacity: 0;
+  }
+}
+
+.anim-logo {
+  animation: logo-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both, glow-pulse 2.4s ease-in-out infinite;
+}
+
+.anim-fade {
+  animation: fade-up 0.6s ease 0.35s both;
+}
+
+.anim-sheet {
+  animation: sheet-in 0.34s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.anim-pop {
+  animation: pop-in 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.reduce-ok *,
+  .reduce-motion *,
+  .reduce-motion *::before,
+  .reduce-motion *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
