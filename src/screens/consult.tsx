@@ -106,7 +106,7 @@ export function ConsultWhenScreen() {
             </div>
           </div>
         ))}
-        <Button disabled={!app.consult.date || !app.consult.time} onClick={() => go("/consult/details")}>Continue</Button>
+        <Button onClick={() => go("/consult/details")}>Continue</Button>
       </div>
     </Page>
   );
@@ -116,7 +116,6 @@ export function ConsultDetailsScreen() {
   const app = useApp();
   const go = useGo();
   const c = app.consult;
-  const [error, setError] = useState("");
   return (
     <Page title="Your details" fallback="/consult/when">
       <StepDots step={5} total={6} />
@@ -139,14 +138,7 @@ export function ConsultDetailsScreen() {
           <Segmented label="Urgency" value={c.urgency} onChange={(urgency) => app.patchConsult({ urgency })} options={[{ id: "Routine", label: "Routine" }, { id: "Soon", label: "Soon" }, { id: "Urgent", label: "Urgent" }]} />
         </div>
         {c.urgency === "Urgent" && <p className="text-[0.9375rem] text-muted-foreground">If you are in immediate danger, call 911 or {ORG.hotline}.</p>}
-        {error && <p className="text-[0.8125rem] font-medium text-danger">{error}</p>}
-        <Button onClick={() => {
-          if (c.name.trim().length < 2 || c.phone.trim().length < 7) {
-            setError("Add a name or nickname and a phone number we can use safely.");
-            return;
-          }
-          go("/consult/review");
-        }}>Review</Button>
+        <Button onClick={() => go("/consult/review")}>Review</Button>
       </div>
     </Page>
   );
@@ -185,7 +177,7 @@ export function ConsultReviewScreen() {
         <SwitchRow label="I understand this is a confidential consult, not an emergency service" checked={consent} onChange={setConsent} />
       </div>
       <div className="mt-4 pb-4">
-        <Button disabled={!consent} onClick={() => { app.confirmBooking(); go("/consult/done"); }}>Confirm Booking</Button>
+        <Button onClick={() => { app.confirmBooking(); go("/consult/done"); }}>Confirm Booking</Button>
       </div>
     </Page>
   );

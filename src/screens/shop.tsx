@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { programs, products, shopCategories } from "@/data/content";
 import { AppleMark, Button, Card, Celebration, Chip, EmptyState, Photo, SearchField, Segmented, Stars, SwipeRow, SwitchRow, TextField } from "@/components/ios/ui";
 import { Page } from "@/components/ios/shell";
-import { isEmail, money } from "@/lib/haptic";
+import { money } from "@/lib/haptic";
 import { useGo } from "@/lib/nav";
 import { useApp, type OrderItem } from "@/lib/store";
 import { cn } from "@/lib/utils";
@@ -54,10 +54,6 @@ export function ProgramRegisterScreen({ id }: { id: string }) {
   const [paid, setPaid] = useState(false);
   if (!program) return <Page title="Register"><EmptyState title="Missing class" body="Go back to the calendar." /></Page>;
   const finish = () => {
-    if (name.trim().length < 2 || !isEmail(email)) {
-      app.toast("Add a name and email");
-      return;
-    }
     if (program.price > 0 && !paid) {
       setPaid(true);
       return;
@@ -288,7 +284,7 @@ export function CartScreen() {
       </div>
       <div className="mt-4 flex gap-2">
         <input className="min-h-11 flex-1 rounded-lg border border-divider bg-card px-3" placeholder="Promo code" value={code} onChange={(e) => setCode(e.target.value)} aria-label="Promo code" />
-        <button type="button" className="min-h-11 rounded-lg bg-primary px-4 font-semibold text-white" onClick={() => { if (!app.applyPromo(code)) app.toast("Code not recognized", "Try WELCOME10."); }}>Apply</button>
+        <button type="button" className="min-h-11 rounded-lg bg-primary px-4 font-semibold text-white" onClick={() => app.applyPromo(code)}>Apply</button>
       </div>
       <div className="mt-4 overflow-hidden rounded-lg bg-card shadow-card">
         <p className="flex justify-between border-b border-divider px-4 py-3"><span className="text-muted-foreground">Subtotal</span><span className="font-semibold">{money(sub)}</span></p>

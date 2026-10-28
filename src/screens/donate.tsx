@@ -3,7 +3,7 @@ import { Check } from "lucide-react";
 import { causes, impactLine, ORG, supporters } from "@/data/content";
 import { AppleMark, Button, Card, Celebration, Chip, EmptyState, Photo, ProgressBar, Segmented, SwitchRow, TextField } from "@/components/ios/ui";
 import { Page } from "@/components/ios/shell";
-import { isEmail, money } from "@/lib/haptic";
+import { money } from "@/lib/haptic";
 import { useGo } from "@/lib/nav";
 import { useApp } from "@/lib/store";
 import { cn } from "@/lib/utils";
@@ -273,14 +273,13 @@ export function VolunteerScreen() {
         <TextField label="Name" value={name} onChange={setName} />
         <TextField label="Email" value={email} onChange={setEmail} />
         <div className="flex flex-wrap gap-2">{["Pantry", "Closet", "Walks", "Office"].map((item) => <Chip key={item} selected={interest === item} onClick={() => setInterest(item)}>{item}</Chip>)}</div>
-        <Button onClick={() => name && isEmail(email) ? setDone(true) : app.toast("Add your name and email")}>Sign up</Button>
+        <Button onClick={() => setDone(true)}>Sign up</Button>
       </div>
     </Page>
   );
 }
 
 export function SponsorScreen() {
-  const app = useApp();
   const go = useGo();
   const [org, setOrg] = useState("");
   const [email, setEmail] = useState("");
@@ -294,7 +293,7 @@ export function SponsorScreen() {
         <TextField label="Organization" value={org} onChange={setOrg} />
         <TextField label="Work email" value={email} onChange={setEmail} />
         <TextField label="What are you hoping to support?" value={note} onChange={setNote} />
-        <Button onClick={() => (org && isEmail(email) ? setDone(true) : app.toast("Add the organization and email"))}>Send inquiry</Button>
+        <Button onClick={() => setDone(true)}>Send inquiry</Button>
       </div>
     </Page>
   );
