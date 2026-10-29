@@ -63,22 +63,32 @@ export function ConsultSpecialistScreen() {
     if (type === "financial") return s.role !== "Attorney" && s.role !== "LPC";
     return true;
   });
+  const chat = app.consult.mode === "chat";
+  const choose = (person?: (typeof specialists)[number]) => {
+    app.patchConsult({ specialistId: person?.id ?? "" });
+    if (chat) {
+      const id = app.startConsultChat(person ? { name: person.name, role: person.role, photo: person.photo } : undefined);
+      go(`/chat/${id}`);
+      return;
+    }
+    go("/consult/when");
+  };
   return (
     <Page title="Choose a specialist" fallback="/consult/mode">
-      <StepDots step={3} total={6} />
-      <p className="footnote mb-3 text-muted-foreground">Optional. Verified means we checked their credential.</p>
-      <button type="button" className="mb-3 min-h-[3.25rem] w-full rounded-2xl bg-secondary font-semibold text-secondary-foreground" onClick={() => { app.patchConsult({ specialistId: "" }); go("/consult/when"); }}>
+      <StepDots step={3} total={chat ? 3 : 6} />
+      <p className="footnote mb-3 text-muted-foreground">{chat ? "Secure chat opens right away. Pick someone, or continue with no preference." : "Optional. Verified means we checked their credential."}</p>
+      <button type="button" className="mb-3 min-h-[3.25rem] w-full rounded-2xl bg-secondary font-semibold text-secondary-foreground" onClick={() => choose()}>
         No preference
       </button>
       <div className="space-y-2 pb-4">
         {list.map((person) => (
-          <button key={person.id} type="button" className="flex w-full gap-3 rounded-2xl bg-card p-3 text-left shadow-card" onClick={() => { app.patchConsult({ specialistId: person.id }); go("/consult/when"); }}>
+          <button key={person.id} type="button" className="flex w-full gap-3 rounded-2xl bg-card p-3 text-left shadow-card" onClick={() => choose(person)}>
             <Photo name={person.photo} alt="" className="h-14 w-14 rounded-full" />
             <span className="min-w-0">
               <span className="flex items-center gap-2"><span className="font-semibold">{person.name}</span><Badge tone="green">Verified</Badge></span>
               <span className="footnote block text-muted-foreground">{person.specialty}</span>
               <span className="footnote text-muted-foreground">{person.rating.toFixed(1)}★ · {person.languages}</span>
-              <span className="footnote block text-link">Next: {person.next}</span>
+              <span className="footnote block text-link">{chat ? "Direct chat" : `Next: ${person.next}`}</span>
             </span>
           </button>
         ))}

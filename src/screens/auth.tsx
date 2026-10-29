@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { ChevronLeft, Shield, VenetianMask } from "lucide-react";
-import { AppleMark, Button, CheckMark, Field, Photo, Sheet, Switch, SwitchRow, TextField, fieldClass } from "@/components/ios/ui";
+import { ChevronLeft } from "lucide-react";
+import { AppleMark, Button, CheckMark, Photo, Sheet, Switch, SwitchRow, TextField } from "@/components/ios/ui";
 import { Page } from "@/components/ios/shell";
 import { onboarding, policies, type Role } from "@/data/content";
 import logoW from "@/img/logo-w.png";
@@ -67,7 +67,7 @@ export function OnboardingScreen() {
   const next = () => {
     if (last) {
       app.markOnboarded();
-      go("/safety-tips");
+      go("/welcome");
     } else setIndex((n) => n + 1);
   };
 
@@ -92,7 +92,7 @@ export function OnboardingScreen() {
             className="min-h-11 rounded-lg bg-black/40 px-4 text-[1rem] font-semibold text-white shadow-[0_2px_10px_rgba(0,0,0,0.25)] backdrop-blur-md"
             onClick={() => {
               app.markOnboarded();
-              go("/safety-tips");
+              go("/welcome");
             }}
           >
             Skip
@@ -165,27 +165,13 @@ function AuthShell({
 
 export function SafetyTipsScreen() {
   const go = useGo();
-  const tips = [
-    { title: "Quick Exit", text: "The pill at the top right instantly shows a weather or notes screen.", icon: Shield },
-    { title: "Discreet Mode", text: "Renames the preview to Notes and keeps notification text generic.", icon: VenetianMask },
-  ];
-  return (
-    <AuthShell title="Your safety" subtitle="These tools are optional. Turn them on now, or later in Settings.">
-      {tips.map(({ title, text, icon: Icon }) => (
-        <div key={title} className="flex gap-3 rounded-2xl bg-card p-4 shadow-card">
-          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-primary-100 text-primary">
-            <Icon size={20} aria-hidden />
-          </span>
-          <div className="min-w-0">
-            <h2 className="headline">{title}</h2>
-            <p className="mt-1 text-[1rem] leading-snug text-foreground">{text}</p>
-          </div>
-        </div>
-      ))}
-      <Button onClick={() => go("/setup-safety")}>Set up now</Button>
-      <Button variant="secondary" onClick={() => go("/welcome")}>Later</Button>
-    </AuthShell>
-  );
+  const left = useRef(false);
+  useEffect(() => {
+    if (left.current) return;
+    left.current = true;
+    go("/welcome");
+  }, [go]);
+  return null;
 }
 
 export function WelcomeScreen() {
@@ -364,7 +350,7 @@ export function OtpScreen() {
 
   const submit = () => {
     app.verifyOtp();
-    go("/setup-safety");
+    go("/home");
   };
 
   return (
@@ -489,40 +475,12 @@ export function ResetScreen() {
 }
 
 export function SetupSafetyScreen() {
-  const app = useApp();
   const go = useGo();
-  const [pin, setPin] = useState("");
-  const [lock, setLock] = useState(app.settings.appLock);
-  const [discreet, setDiscreet] = useState(app.settings.discreet);
-  const next = app.user ? "/home" : "/welcome";
-  return (
-    <AuthShell title="Set up safety" subtitle="Choose what should be on before you continue. You can change this anytime." back fallback="/safety-tips">
-      <div className="mt-4 w-full min-w-0 overflow-hidden rounded-2xl bg-card shadow-card">
-        <SwitchRow label="App Lock" detail="Face ID, Touch ID, or a 4-digit PIN." checked={lock} onChange={setLock} />
-        <SwitchRow label="Discreet Mode" detail="Shows Notes in the title and app switcher, and keeps alerts generic." checked={discreet} onChange={setDiscreet} />
-      </div>
-      {lock && (
-        <div className="mt-4">
-          <Field label="4-digit PIN" hint="You’ll use this if biometrics aren’t available.">
-            <input className={fieldClass} inputMode="numeric" maxLength={4} value={pin} onChange={(e) => setPin(e.target.value.replace(/\D/g, "").slice(0, 4))} aria-label="PIN" />
-          </Field>
-        </div>
-      )}
-      <div className="mt-6 space-y-2 pb-6">
-        <Button
-          onClick={() => {
-            if (lock) {
-              if (pin.length !== 4) return;
-              app.enableLock(pin);
-            } else app.updateSettings({ appLock: false });
-            app.updateSettings({ discreet });
-            go(next);
-          }}
-        >
-          Save and continue
-        </Button>
-        <Button variant="tertiary" className="w-full" onClick={() => go(next)}>Skip for now</Button>
-      </div>
-    </AuthShell>
-  );
+  const left = useRef(false);
+  useEffect(() => {
+    if (left.current) return;
+    left.current = true;
+    go("/home");
+  }, [go]);
+  return null;
 }

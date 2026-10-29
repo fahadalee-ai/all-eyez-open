@@ -91,12 +91,20 @@ import { Route as SettingsNotificationsRouteImport } from './routes/settings/not
 import { Route as SettingsPrivacyRouteImport } from './routes/settings/privacy'
 import { Route as ShopIndexRouteImport } from './routes/shop/index'
 import { Route as ShopIdRouteImport } from './routes/shop/$id'
+import { Route as SubscribeIndexRouteImport } from './routes/subscribe/index'
+import { Route as SubscribeThanksRouteImport } from './routes/subscribe/thanks'
+import { Route as SubscriptionsIndexRouteImport } from './routes/subscriptions/index'
+import { Route as SubscriptionsIdRouteImport } from './routes/subscriptions/$id'
 import { Route as TicketIdRouteImport } from './routes/ticket/$id'
 import { Route as DonateRecurringIdRouteImport } from './routes/donate/recurring/$id'
 import { Route as OrdersIdIndexRouteImport } from './routes/orders/$id/index'
 import { Route as OrdersIdReturnRouteImport } from './routes/orders/$id/return'
 import { Route as ProgramsIdIndexRouteImport } from './routes/programs/$id/index'
 import { Route as ProgramsIdRegisterRouteImport } from './routes/programs/$id/register'
+import { Route as SubscribeIdIndexRouteImport } from './routes/subscribe/$id/index'
+import { Route as SubscribeIdDetailsRouteImport } from './routes/subscribe/$id/details'
+import { Route as SubscribeIdPayRouteImport } from './routes/subscribe/$id/pay'
+import { Route as SubscribeIdReviewRouteImport } from './routes/subscribe/$id/review'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -508,6 +516,26 @@ const ShopIdRoute = ShopIdRouteImport.update({
   path: '/shop/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SubscribeIndexRoute = SubscribeIndexRouteImport.update({
+  id: '/subscribe/',
+  path: '/subscribe/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubscribeThanksRoute = SubscribeThanksRouteImport.update({
+  id: '/subscribe/thanks',
+  path: '/subscribe/thanks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubscriptionsIndexRoute = SubscriptionsIndexRouteImport.update({
+  id: '/subscriptions/',
+  path: '/subscriptions/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubscriptionsIdRoute = SubscriptionsIdRouteImport.update({
+  id: '/subscriptions/$id',
+  path: '/subscriptions/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TicketIdRoute = TicketIdRouteImport.update({
   id: '/ticket/$id',
   path: '/ticket/$id',
@@ -536,6 +564,26 @@ const ProgramsIdIndexRoute = ProgramsIdIndexRouteImport.update({
 const ProgramsIdRegisterRoute = ProgramsIdRegisterRouteImport.update({
   id: '/programs/$id/register',
   path: '/programs/$id/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubscribeIdIndexRoute = SubscribeIdIndexRouteImport.update({
+  id: '/subscribe/$id/',
+  path: '/subscribe/$id/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubscribeIdDetailsRoute = SubscribeIdDetailsRouteImport.update({
+  id: '/subscribe/$id/details',
+  path: '/subscribe/$id/details',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubscribeIdPayRoute = SubscribeIdPayRouteImport.update({
+  id: '/subscribe/$id/pay',
+  path: '/subscribe/$id/pay',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubscribeIdReviewRoute = SubscribeIdReviewRouteImport.update({
+  id: '/subscribe/$id/review',
+  path: '/subscribe/$id/review',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -608,6 +656,8 @@ export interface FileRoutesByFullPath {
   '/settings/notifications': typeof SettingsNotificationsRoute
   '/settings/privacy': typeof SettingsPrivacyRoute
   '/shop/$id': typeof ShopIdRoute
+  '/subscribe/thanks': typeof SubscribeThanksRoute
+  '/subscriptions/$id': typeof SubscriptionsIdRoute
   '/ticket/$id': typeof TicketIdRoute
   '/chat/': typeof ChatIndexRoute
   '/community/': typeof CommunityIndexRoute
@@ -623,11 +673,17 @@ export interface FileRoutesByFullPath {
   '/services/': typeof ServicesIndexRoute
   '/settings/': typeof SettingsIndexRoute
   '/shop/': typeof ShopIndexRoute
+  '/subscribe/': typeof SubscribeIndexRoute
+  '/subscriptions/': typeof SubscriptionsIndexRoute
   '/donate/recurring/$id': typeof DonateRecurringIdRoute
   '/orders/$id/return': typeof OrdersIdReturnRoute
   '/programs/$id/register': typeof ProgramsIdRegisterRoute
+  '/subscribe/$id/details': typeof SubscribeIdDetailsRoute
+  '/subscribe/$id/pay': typeof SubscribeIdPayRoute
+  '/subscribe/$id/review': typeof SubscribeIdReviewRoute
   '/orders/$id/': typeof OrdersIdIndexRoute
   '/programs/$id/': typeof ProgramsIdIndexRoute
+  '/subscribe/$id/': typeof SubscribeIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -698,6 +754,8 @@ export interface FileRoutesByTo {
   '/settings/notifications': typeof SettingsNotificationsRoute
   '/settings/privacy': typeof SettingsPrivacyRoute
   '/shop/$id': typeof ShopIdRoute
+  '/subscribe/thanks': typeof SubscribeThanksRoute
+  '/subscriptions/$id': typeof SubscriptionsIdRoute
   '/ticket/$id': typeof TicketIdRoute
   '/chat': typeof ChatIndexRoute
   '/community': typeof CommunityIndexRoute
@@ -713,11 +771,17 @@ export interface FileRoutesByTo {
   '/services': typeof ServicesIndexRoute
   '/settings': typeof SettingsIndexRoute
   '/shop': typeof ShopIndexRoute
+  '/subscribe': typeof SubscribeIndexRoute
+  '/subscriptions': typeof SubscriptionsIndexRoute
   '/donate/recurring/$id': typeof DonateRecurringIdRoute
   '/orders/$id/return': typeof OrdersIdReturnRoute
   '/programs/$id/register': typeof ProgramsIdRegisterRoute
+  '/subscribe/$id/details': typeof SubscribeIdDetailsRoute
+  '/subscribe/$id/pay': typeof SubscribeIdPayRoute
+  '/subscribe/$id/review': typeof SubscribeIdReviewRoute
   '/orders/$id': typeof OrdersIdIndexRoute
   '/programs/$id': typeof ProgramsIdIndexRoute
+  '/subscribe/$id': typeof SubscribeIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -789,6 +853,8 @@ export interface FileRoutesById {
   '/settings/notifications': typeof SettingsNotificationsRoute
   '/settings/privacy': typeof SettingsPrivacyRoute
   '/shop/$id': typeof ShopIdRoute
+  '/subscribe/thanks': typeof SubscribeThanksRoute
+  '/subscriptions/$id': typeof SubscriptionsIdRoute
   '/ticket/$id': typeof TicketIdRoute
   '/chat/': typeof ChatIndexRoute
   '/community/': typeof CommunityIndexRoute
@@ -804,11 +870,17 @@ export interface FileRoutesById {
   '/services/': typeof ServicesIndexRoute
   '/settings/': typeof SettingsIndexRoute
   '/shop/': typeof ShopIndexRoute
+  '/subscribe/': typeof SubscribeIndexRoute
+  '/subscriptions/': typeof SubscriptionsIndexRoute
   '/donate/recurring/$id': typeof DonateRecurringIdRoute
   '/orders/$id/return': typeof OrdersIdReturnRoute
   '/programs/$id/register': typeof ProgramsIdRegisterRoute
+  '/subscribe/$id/details': typeof SubscribeIdDetailsRoute
+  '/subscribe/$id/pay': typeof SubscribeIdPayRoute
+  '/subscribe/$id/review': typeof SubscribeIdReviewRoute
   '/orders/$id/': typeof OrdersIdIndexRoute
   '/programs/$id/': typeof ProgramsIdIndexRoute
+  '/subscribe/$id/': typeof SubscribeIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -881,6 +953,8 @@ export interface FileRouteTypes {
     | '/settings/notifications'
     | '/settings/privacy'
     | '/shop/$id'
+    | '/subscribe/thanks'
+    | '/subscriptions/$id'
     | '/ticket/$id'
     | '/chat/'
     | '/community/'
@@ -896,11 +970,17 @@ export interface FileRouteTypes {
     | '/services/'
     | '/settings/'
     | '/shop/'
+    | '/subscribe/'
+    | '/subscriptions/'
     | '/donate/recurring/$id'
     | '/orders/$id/return'
     | '/programs/$id/register'
+    | '/subscribe/$id/details'
+    | '/subscribe/$id/pay'
+    | '/subscribe/$id/review'
     | '/orders/$id/'
     | '/programs/$id/'
+    | '/subscribe/$id/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -971,6 +1051,8 @@ export interface FileRouteTypes {
     | '/settings/notifications'
     | '/settings/privacy'
     | '/shop/$id'
+    | '/subscribe/thanks'
+    | '/subscriptions/$id'
     | '/ticket/$id'
     | '/chat'
     | '/community'
@@ -986,11 +1068,17 @@ export interface FileRouteTypes {
     | '/services'
     | '/settings'
     | '/shop'
+    | '/subscribe'
+    | '/subscriptions'
     | '/donate/recurring/$id'
     | '/orders/$id/return'
     | '/programs/$id/register'
+    | '/subscribe/$id/details'
+    | '/subscribe/$id/pay'
+    | '/subscribe/$id/review'
     | '/orders/$id'
     | '/programs/$id'
+    | '/subscribe/$id'
   id:
     | '__root__'
     | '/'
@@ -1061,6 +1149,8 @@ export interface FileRouteTypes {
     | '/settings/notifications'
     | '/settings/privacy'
     | '/shop/$id'
+    | '/subscribe/thanks'
+    | '/subscriptions/$id'
     | '/ticket/$id'
     | '/chat/'
     | '/community/'
@@ -1076,11 +1166,17 @@ export interface FileRouteTypes {
     | '/services/'
     | '/settings/'
     | '/shop/'
+    | '/subscribe/'
+    | '/subscriptions/'
     | '/donate/recurring/$id'
     | '/orders/$id/return'
     | '/programs/$id/register'
+    | '/subscribe/$id/details'
+    | '/subscribe/$id/pay'
+    | '/subscribe/$id/review'
     | '/orders/$id/'
     | '/programs/$id/'
+    | '/subscribe/$id/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1152,6 +1248,8 @@ export interface RootRouteChildren {
   SettingsNotificationsRoute: typeof SettingsNotificationsRoute
   SettingsPrivacyRoute: typeof SettingsPrivacyRoute
   ShopIdRoute: typeof ShopIdRoute
+  SubscribeThanksRoute: typeof SubscribeThanksRoute
+  SubscriptionsIdRoute: typeof SubscriptionsIdRoute
   TicketIdRoute: typeof TicketIdRoute
   ChatIndexRoute: typeof ChatIndexRoute
   CommunityIndexRoute: typeof CommunityIndexRoute
@@ -1167,11 +1265,17 @@ export interface RootRouteChildren {
   ServicesIndexRoute: typeof ServicesIndexRoute
   SettingsIndexRoute: typeof SettingsIndexRoute
   ShopIndexRoute: typeof ShopIndexRoute
+  SubscribeIndexRoute: typeof SubscribeIndexRoute
+  SubscriptionsIndexRoute: typeof SubscriptionsIndexRoute
   DonateRecurringIdRoute: typeof DonateRecurringIdRoute
   OrdersIdReturnRoute: typeof OrdersIdReturnRoute
   ProgramsIdRegisterRoute: typeof ProgramsIdRegisterRoute
+  SubscribeIdDetailsRoute: typeof SubscribeIdDetailsRoute
+  SubscribeIdPayRoute: typeof SubscribeIdPayRoute
+  SubscribeIdReviewRoute: typeof SubscribeIdReviewRoute
   OrdersIdIndexRoute: typeof OrdersIdIndexRoute
   ProgramsIdIndexRoute: typeof ProgramsIdIndexRoute
+  SubscribeIdIndexRoute: typeof SubscribeIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -1750,6 +1854,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShopIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/subscribe/': {
+      id: '/subscribe/'
+      path: '/subscribe'
+      fullPath: '/subscribe/'
+      preLoaderRoute: typeof SubscribeIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/subscribe/thanks': {
+      id: '/subscribe/thanks'
+      path: '/subscribe/thanks'
+      fullPath: '/subscribe/thanks'
+      preLoaderRoute: typeof SubscribeThanksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/subscriptions/': {
+      id: '/subscriptions/'
+      path: '/subscriptions'
+      fullPath: '/subscriptions/'
+      preLoaderRoute: typeof SubscriptionsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/subscriptions/$id': {
+      id: '/subscriptions/$id'
+      path: '/subscriptions/$id'
+      fullPath: '/subscriptions/$id'
+      preLoaderRoute: typeof SubscriptionsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ticket/$id': {
       id: '/ticket/$id'
       path: '/ticket/$id'
@@ -1790,6 +1922,34 @@ declare module '@tanstack/react-router' {
       path: '/programs/$id/register'
       fullPath: '/programs/$id/register'
       preLoaderRoute: typeof ProgramsIdRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/subscribe/$id/': {
+      id: '/subscribe/$id/'
+      path: '/subscribe/$id'
+      fullPath: '/subscribe/$id/'
+      preLoaderRoute: typeof SubscribeIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/subscribe/$id/details': {
+      id: '/subscribe/$id/details'
+      path: '/subscribe/$id/details'
+      fullPath: '/subscribe/$id/details'
+      preLoaderRoute: typeof SubscribeIdDetailsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/subscribe/$id/pay': {
+      id: '/subscribe/$id/pay'
+      path: '/subscribe/$id/pay'
+      fullPath: '/subscribe/$id/pay'
+      preLoaderRoute: typeof SubscribeIdPayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/subscribe/$id/review': {
+      id: '/subscribe/$id/review'
+      path: '/subscribe/$id/review'
+      fullPath: '/subscribe/$id/review'
+      preLoaderRoute: typeof SubscribeIdReviewRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -1864,6 +2024,8 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsNotificationsRoute: SettingsNotificationsRoute,
   SettingsPrivacyRoute: SettingsPrivacyRoute,
   ShopIdRoute: ShopIdRoute,
+  SubscribeThanksRoute: SubscribeThanksRoute,
+  SubscriptionsIdRoute: SubscriptionsIdRoute,
   TicketIdRoute: TicketIdRoute,
   ChatIndexRoute: ChatIndexRoute,
   CommunityIndexRoute: CommunityIndexRoute,
@@ -1879,11 +2041,17 @@ const rootRouteChildren: RootRouteChildren = {
   ServicesIndexRoute: ServicesIndexRoute,
   SettingsIndexRoute: SettingsIndexRoute,
   ShopIndexRoute: ShopIndexRoute,
+  SubscribeIndexRoute: SubscribeIndexRoute,
+  SubscriptionsIndexRoute: SubscriptionsIndexRoute,
   DonateRecurringIdRoute: DonateRecurringIdRoute,
   OrdersIdReturnRoute: OrdersIdReturnRoute,
   ProgramsIdRegisterRoute: ProgramsIdRegisterRoute,
+  SubscribeIdDetailsRoute: SubscribeIdDetailsRoute,
+  SubscribeIdPayRoute: SubscribeIdPayRoute,
+  SubscribeIdReviewRoute: SubscribeIdReviewRoute,
   OrdersIdIndexRoute: OrdersIdIndexRoute,
   ProgramsIdIndexRoute: ProgramsIdIndexRoute,
+  SubscribeIdIndexRoute: SubscribeIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

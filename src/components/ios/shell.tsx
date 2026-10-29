@@ -74,14 +74,15 @@ export function MobileRoot({ children }: { children: ReactNode }) {
     };
   }, [path]);
 
-  const showTip = app.booted && !app.settings.quickExitSeen && !app.disguised && !app.locked && path !== "/";
+  const hideQuickExit = path === "/" || path === "/onboarding";
+  const showTip = app.booted && !app.settings.quickExitSeen && !app.disguised && !app.locked && path !== "/" && !hideQuickExit;
 
   return (
     <FrameCtx.Provider value={node}>
       <div ref={frame} className="relative flex h-full min-h-0 w-full min-w-0 flex-col bg-background">
         <div className={cn("flex min-h-0 w-full min-w-0 flex-1 flex-col", (app.locked || app.disguised) && "hidden")}>{children}</div>
         {showTabs && !app.disguised && !app.locked && <TabBar path={path} es={es} badge={app.unreadChat} />}
-        {!app.disguised && <QuickExit es={es} />}
+        {!app.disguised && !hideQuickExit && <QuickExit es={es} />}
         {showTip && (
           <div className="absolute right-3 top-[4.25rem] z-30 w-64 rounded-2xl bg-ink p-3 text-white shadow-card">
             <p className="text-[0.9375rem] font-semibold leading-snug">

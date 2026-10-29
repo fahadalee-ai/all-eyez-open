@@ -99,7 +99,6 @@ export function DonorDetailsScreen() {
         <TextField label="Dedicate this gift" value={d.honor} onChange={(honor) => app.patchDonate({ honor })} hint="In honor or in memory. Optional." />
         <div className="overflow-hidden rounded-lg bg-card shadow-card">
           <SwitchRow label="Give anonymously" checked={d.anonymous} onChange={(anonymous) => app.patchDonate({ anonymous })} />
-          <SwitchRow label="Cover processing (3%)" detail="So the full gift reaches the fund." checked={d.coverFees} onChange={(coverFees) => app.patchDonate({ coverFees })} />
         </div>
       </div>
     </Page>
@@ -141,18 +140,15 @@ export function DonateReviewScreen() {
   const app = useApp();
   const go = useGo();
   const d = app.donate;
-  const fee = d.coverFees ? Math.round(d.amount * 0.03 * 100) / 100 : 0;
   const fund = causes.find((c) => c.id === d.fund);
   return (
-    <Page title="Review gift" fallback="/donate/pay" footer={<Button onClick={() => { app.confirmDonation(); go("/donate/thanks"); }}>Give {money(d.amount + fee)}</Button>}>
+    <Page title="Review gift" fallback="/donate/pay" footer={<Button onClick={() => { app.confirmDonation(); go("/donate/thanks"); }}>Give {money(d.amount)}</Button>}>
       <p className="mb-3 text-[0.75rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">Step 4 of 4</p>
       <Card className="divide-y divide-divider">
         {[
           ["Amount", money(d.amount)],
           ["Frequency", d.frequency],
           ["Fund", fund?.title ?? ""],
-          ["Fees covered", money(fee)],
-          ["Total", money(d.amount + fee)],
           ["Method", d.method === "apple" ? "Apple Pay" : "Card"],
           ["Receipt", d.anonymous ? "Anonymous" : d.name || "On this device"],
         ].map(([k, v]) => (
@@ -175,18 +171,12 @@ export function DonateThanksScreen() {
         <p className="mt-3 text-[0.8rem] font-semibold tracking-[0.16em] text-link">{gift?.id ?? "RECEIPT"}</p>
         <p className="mt-1 text-[0.8125rem] text-muted-foreground">{fund?.title ?? "Where needed most"} · {gift?.frequency ?? "One-time"} · Saved on this device</p>
       </Celebration>
-      <div className="mt-3 grid grid-cols-2 gap-2">
-        <button type="button" className="min-h-16 rounded-lg bg-card px-3 text-center shadow-card" onClick={() => app.toast("Receipt saved on this device")}>
-          <span className="block text-[0.7rem] font-semibold uppercase tracking-[0.1em] text-muted-foreground">Receipt</span>
-          <span className="mt-0.5 block font-semibold text-link">Download</span>
-        </button>
-        <button type="button" className="min-h-16 rounded-lg bg-card px-3 text-center shadow-card" onClick={() => app.toast("Impact card copied")}>
-          <span className="block text-[0.7rem] font-semibold uppercase tracking-[0.1em] text-muted-foreground">Share</span>
-          <span className="mt-0.5 block font-semibold text-link">Impact card</span>
-        </button>
-      </div>
+      <button type="button" className="mt-3 min-h-16 w-full rounded-lg bg-card px-3 text-center shadow-card" onClick={() => app.toast("Receipt saved on this device")}>
+        <span className="block text-[0.7rem] font-semibold uppercase tracking-[0.1em] text-muted-foreground">Receipt</span>
+        <span className="mt-0.5 block font-semibold text-link">Download</span>
+      </button>
       {gift?.frequency !== "Monthly" && (
-        <button type="button" className="mt-3 w-full rounded-lg bg-primary-50 px-4 py-3 text-left" onClick={() => { app.patchDonate({ frequency: "Monthly" }); go("/donate"); }}>
+        <button type="button" className="mt-3 w-full rounded-lg bg-primary-50 px-4 py-3 text-left" onClick={() => go("/subscribe")}>
           <span className="block font-semibold">Become a monthly donor</span>
           <span className="mt-0.5 block text-[0.85rem] text-muted-foreground">The same gift, once a month. You can stop it anytime.</span>
         </button>

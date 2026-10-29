@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Bell, Calendar, ChevronRight, Heart, Image as ImageIcon, Info, Lock, LogOut, Mail, MapPin, MessageCircle, Moon, Package, Phone, Settings, Share2, Shield, ShoppingBag, Star, Sun, Type, User } from "lucide-react";
+import { Bell, Calendar, ChevronRight, Heart, Image as ImageIcon, Info, Lock, LogOut, Mail, MapPin, MessageCircle, Moon, Package, Phone, Repeat, Settings, Share2, Shield, Star, Sun, Type, User } from "lucide-react";
 import {
   aboutSections,
   albums,
@@ -401,7 +401,6 @@ export function MoreScreen() {
       title: "Community",
       items: [
         { to: "/programs", label: "Programs & classes", icon: Calendar },
-        { to: "/shop", label: "Shop", icon: ShoppingBag },
         { to: "/gallery", label: "Gallery", icon: ImageIcon },
         { to: "/reviews", label: "Reviews", icon: Star },
         { to: "/qa", label: "Questions", icon: MessageCircle },
@@ -411,6 +410,7 @@ export function MoreScreen() {
       title: "Account",
       items: [
         { to: "/orders", label: "Orders", icon: Package },
+        { to: "/subscriptions", label: "Subscriptions", icon: Repeat },
         { to: "/donations", label: "Donation history", icon: Heart },
         { to: "/about", label: "About All Eyez Open", icon: Info },
         { to: "/social", label: "Social", icon: Share2 },
@@ -617,7 +617,6 @@ export function HelpScreen() {
   const next = [
     { title: "Safety plan", text: "A private checklist stored only on this phone.", icon: Shield, to: "/safety-plan" },
     { title: "Local shelters", text: "Call first. Street addresses are not listed.", icon: MapPin, to: "/shelters" },
-    { title: "Leave this screen safely", text: "Quick Exit, then hold the city name to return.", icon: Lock, to: "/safety-tips" },
     { title: "Questions", text: "Ask the care team without sharing your address.", icon: MessageCircle, to: "/qa" },
   ];
   return (

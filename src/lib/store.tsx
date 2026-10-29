@@ -169,6 +169,32 @@ export const emptyConsult = (): ConsultDraft => ({
   urgency: "Routine",
 });
 
+export type Membership = {
+  id: string;
+  userId: string;
+  planId: string;
+  name: string;
+  email: string;
+  status: "Active" | "Paused" | "Canceled";
+  started: string;
+  renews: string;
+  method: "apple" | "card";
+};
+
+export type SubscribeDraft = {
+  planId: string;
+  name: string;
+  email: string;
+  method: "apple" | "card";
+};
+
+export const emptySubscribe = (): SubscribeDraft => ({
+  planId: "",
+  name: "",
+  email: "",
+  method: "apple",
+});
+
 export const emptyDonate = (): DonateDraft => ({
   fund: "general",
   frequency: "One-time",
@@ -198,6 +224,8 @@ type State = {
   unlocked: boolean;
   bookings: Booking[];
   donations: Donation[];
+  memberships: Membership[];
+  subscribe: SubscribeDraft;
   posts: Post[];
   reacted: string[];
   cart: CartLine[];
@@ -223,6 +251,7 @@ type State = {
   modules: Record<string, boolean>;
   lastBookingId: string;
   lastDonationId: string;
+  lastMembershipId: string;
   lastOrderId: string;
 };
 
@@ -238,6 +267,20 @@ function seedState(): State {
     unlocked: true,
     bookings: seedBookings as Booking[],
     donations: seedDonations.map((d) => ({ ...d, recurring: false })),
+    memberships: [
+      {
+        id: "SUB-1001",
+        userId: "u-ariel",
+        planId: "neighbor",
+        name: "Ariel",
+        email: "ariel@alleyezopen.org",
+        status: "Active",
+        started: "Sep 29, 2026",
+        renews: "Nov 29, 2026",
+        method: "card",
+      },
+    ],
+    subscribe: emptySubscribe(),
     posts: seedPosts,
     reacted: [],
     cart: [],
@@ -263,6 +306,7 @@ function seedState(): State {
     modules: {},
     lastBookingId: "",
     lastDonationId: "",
+    lastMembershipId: "",
     lastOrderId: "",
   };
 }
@@ -289,6 +333,9 @@ function buildApi(state: State, set: Dispatch<SetStateAction<State>>) {
     locked: state.settings.appLock && !state.unlocked,
     myBookings: owner ? state.bookings.filter((b) => b.userId === owner) : [],
     myDonations: owner ? state.donations.filter((d) => d.userId === owner) : [],
+    myMemberships: owner
+      ? state.memberships.filter((m) => m.userId === owner)
+      : state.memberships.filter((m) => m.userId === "guest"),
     myOrders: owner ? state.orders.filter((o) => o.userId === owner) : [],
     myQuestions: owner ? state.questions.filter((q) => q.userId === owner) : [],
     myNotices: state.notices.filter((n) => !owner || n.userId === owner || n.userId === "all"),
@@ -414,10 +461,32 @@ function buildApi(state: State, set: Dispatch<SetStateAction<State>>) {
       set((s) => ({ ...s, bookings: s.bookings.map((b) => (b.id === id ? { ...b, rating, review } : b)) }));
       toast("Thank you for the feedback");
     },
+    patchSubscribe: (partial: Partial<SubscribeDraft>) => set((s) => ({ ...s, subscribe: { ...s.subscribe, ...partial } })),
+    confirmMembership: () => {
+      const id = `SUB-${Math.floor(2000 + Math.random() * 7000)}`;
+      const membership: Membership = {
+        id,
+        userId: owner || "guest",
+        planId: state.subscribe.planId,
+        name: state.subscribe.name,
+        email: state.subscribe.email,
+        status: "Active",
+        started: "Oct 29, 2026",
+        renews: "Nov 29, 2026",
+        method: state.subscribe.method,
+      };
+      set((s) => ({ ...s, memberships: [membership, ...s.memberships], lastMembershipId: id }));
+      toast("Subscription started", "A receipt is saved on this device.");
+      return membership;
+    },
+    setMembershipStatus: (id: string, status: Membership["status"]) => {
+      set((s) => ({ ...s, memberships: s.memberships.map((m) => (m.id === id ? { ...m, status } : m)) }));
+      toast(status === "Paused" ? "Subscription paused" : status === "Canceled" ? "Subscription canceled" : "Subscription active");
+    },
     patchDonate: (partial: Partial<DonateDraft>) => set((s) => ({ ...s, donate: { ...s.donate, ...partial } })),
     confirmDonation: () => {
       const amount = state.donate.amount;
-      const fee = state.donate.coverFees ? Math.round(amount * 0.03 * 100) / 100 : 0;
+      const fee = 0;
       const donation: Donation = {
         id: `DN-${Math.floor(3000 + Math.random() * 6000)}`,
         userId: owner || "guest",
@@ -612,6 +681,25 @@ function buildApi(state: State, set: Dispatch<SetStateAction<State>>) {
         unread: 0,
         disappearing: false,
         messages: [{ id: uid("m"), from: "them", text: `I'm here. You selected “${topic}.” Share only what feels safe.`, time: "Now" }],
+      };
+      set((s) => ({ ...s, threads: [thread, ...s.threads] }));
+      return id;
+    },
+    startConsultChat: (person?: { name: string; role: string; photo?: string }) => {
+      const id = uid("th");
+      const title = person?.name ?? "Care team";
+      const intro = person
+        ? `You are chatting with ${person.name}, ${person.role}. Typically reply within business hours.`
+        : "You are chatting with the care team. No preference was selected. Typically reply within business hours.";
+      const thread: Thread = {
+        id,
+        title,
+        role: person ? `${person.role} · Secure chat` : "No preference · Secure chat",
+        photo: person?.photo ?? "avatar-ruth",
+        online: false,
+        unread: 0,
+        disappearing: false,
+        messages: [{ id: uid("m"), from: "them", text: intro, time: "Now" }],
       };
       set((s) => ({ ...s, threads: [thread, ...s.threads] }));
       return id;

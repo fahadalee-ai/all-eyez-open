@@ -75,6 +75,14 @@ export function ChatThreadScreen({ id }: { id: string }) {
       }
     >
       <p className="mb-3 rounded-xl bg-primary-50 p-3 text-[0.8125rem] leading-snug">End-to-end private. In an emergency call 911.</p>
+      {thread.role.includes("Secure chat") && (
+        <div className="mb-3 rounded-lg bg-card px-4 py-3 shadow-card">
+          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">You are chatting with</p>
+          <p className="mt-1 text-[1.05rem] font-semibold">{thread.title}</p>
+          <p className="mt-0.5 text-[0.9rem] text-muted-foreground">{thread.role.replace(" · Secure chat", "")}</p>
+          <p className="mt-2 text-[0.95rem] leading-snug">Typically reply within business hours.</p>
+        </div>
+      )}
       <div className="space-y-2">
         {thread.messages.map((message) => (
           <div key={message.id} className={cn("flex", message.from === "me" ? "justify-end" : "justify-start")}>
