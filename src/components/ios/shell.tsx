@@ -6,7 +6,6 @@ import {
   House,
   LayoutGrid,
   MessagesSquare,
-  Shield,
   Users,
 } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
@@ -74,30 +73,11 @@ export function MobileRoot({ children }: { children: ReactNode }) {
     };
   }, [path]);
 
-  const hideQuickExit = path === "/" || path === "/onboarding" || path === "/welcome" || path === "/login" || path === "/register" || path === "/verify" || path === "/forgot" || path === "/reset";
-  const showTip = app.booted && !app.settings.quickExitSeen && !app.disguised && !app.locked && path !== "/" && !hideQuickExit;
-
   return (
     <FrameCtx.Provider value={node}>
       <div ref={frame} className="relative flex h-full min-h-0 w-full min-w-0 flex-col bg-background">
         <div className={cn("flex min-h-0 w-full min-w-0 flex-1 flex-col", (app.locked || app.disguised) && "hidden")}>{children}</div>
         {showTabs && !app.disguised && !app.locked && <TabBar path={path} es={es} badge={app.unreadChat} />}
-        {!app.disguised && !hideQuickExit && <QuickExit es={es} />}
-        {showTip && (
-          <div className="absolute right-3 top-[4.25rem] z-30 w-64 rounded-2xl bg-ink p-3 text-white shadow-card">
-            <p className="text-[0.9375rem] font-semibold leading-snug">
-              {es ? "Salida rápida" : "Quick Exit"}
-            </p>
-            <p className="mt-1 text-[0.8125rem] leading-snug text-white/80">
-              {es
-                ? "Un toque cierra esta vista y muestra una pantalla neutra. Mantén pulsado el nombre de la ciudad para volver."
-                : "One tap closes this view and shows a neutral screen. Press and hold the city name, or the Notes title, to come back."}
-            </p>
-            <button type="button" className="mt-2 min-h-11 text-[0.9375rem] font-semibold text-[#e4c6f8]" onClick={() => app.markQuickExitSeen()}>
-              {es ? "Entendido" : "Got it"}
-            </button>
-          </div>
-        )}
         {app.disguised && <Disguise />}
         {app.locked && !app.disguised && <LockScreen />}
         {app.offline && !app.disguised && (
@@ -157,23 +137,6 @@ function TabBar({ path, es, badge }: { path: string; es: boolean; badge: number 
         );
       })}
     </nav>
-  );
-}
-
-function QuickExit({ es }: { es: boolean }) {
-  const app = useApp();
-  return (
-    <button
-      type="button"
-      onClick={() => {
-        haptic(20);
-        app.setDisguised(true);
-      }}
-      className="quick-exit inline-flex min-h-11 items-center gap-1 rounded-lg bg-ink px-3 text-[0.75rem] font-semibold leading-none text-white shadow-card"
-    >
-      <Shield size={14} aria-hidden />
-      {es ? "Salir" : "Quick Exit"}
-    </button>
   );
 }
 
@@ -365,7 +328,7 @@ export function Page({
                 ) : (
                   <span />
                 )}
-                <div className="relative z-10 ml-auto flex h-full items-center pr-36">{right}</div>
+                <div className="relative z-10 ml-auto flex h-full items-center pr-4">{right}</div>
               </div>
               {showInline ? (
                 <h1 className="pointer-events-none absolute inset-0 flex items-center justify-center px-[7.5rem]">
@@ -373,12 +336,9 @@ export function Page({
                 </h1>
               ) : null}
             </div>
-          ) : (
-            <div className="flex h-14 items-center pr-36">
-              <span className="flex-1" />
-              <div className="flex items-center">{right}</div>
-            </div>
-          )}
+          ) : right ? (
+            <div className="flex h-14 items-center justify-end">{right}</div>
+          ) : null}
           {large && !compact && title && <h1 className={cn("large-title pb-3", back || !large ? "px-4" : "pr-2")}>{title}</h1>}
         </header>
       )}

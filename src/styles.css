@@ -226,13 +226,6 @@
   max-width: 100%;
 }
 
-.quick-exit {
-  position: absolute;
-  top: 0.625rem;
-  right: 0.5rem;
-  z-index: 40;
-}
-
 @utility no-scrollbar {
   scrollbar-width: none;
   &::-webkit-scrollbar {
