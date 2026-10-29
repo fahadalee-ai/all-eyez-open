@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Calendar, Check, Clock, MapPin } from "lucide-react";
+import { Calendar, Check, Clock, MapPin, ShoppingBag } from "lucide-react";
 import { ORG, programs, products, shopCategories, specialists, staff } from "@/data/content";
 import { AppleMark, Button, Celebration, Chip, EmptyState, Photo, ProgressBar, SearchField, Segmented, Stars, SwipeRow, SwitchRow, TextArea, TextField } from "@/components/ios/ui";
 import { Page } from "@/components/ios/shell";
@@ -321,15 +321,46 @@ export function ShopScreen() {
   if (sort === "Rating") list = [...list].sort((a, b) => b.rating - a.rating);
   const count = app.cart.reduce((n, line) => n + line.qty, 0);
   return (
-    <Page title="Shop" fallback="/more" right={<button type="button" className="min-h-11 px-2 font-semibold text-link" onClick={() => go("/cart")}>{count ? `Cart · ${count}` : "Cart"}</button>}>
-      <p className="text-[0.95rem] leading-snug text-muted-foreground">Books, kits, and merch with no slogan on the outside. Proceeds support survivor programs.</p>
-      <div className="mt-3"><SearchField value={q} onChange={setQ} placeholder="Search the shop" /></div>
+    <Page title="Shop" fallback="/more">
+      <div className="flex items-center gap-2">
+        <div className="min-w-0 flex-1">
+          <SearchField value={q} onChange={setQ} placeholder="Search books, kits, merch" />
+        </div>
+        <button
+          type="button"
+          aria-label={count ? `Cart, ${count} items` : "Cart"}
+          onClick={() => go("/cart")}
+          className="relative grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-ink text-white"
+        >
+          <ShoppingBag size={18} aria-hidden />
+          {count > 0 && (
+            <span className="absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-primary px-1 text-[0.65rem] font-bold leading-none text-white">
+              {count}
+            </span>
+          )}
+        </button>
+      </div>
+      <p className="mt-2 text-[0.8125rem] leading-snug text-muted-foreground">Plain packaging. Every purchase supports survivor programs.</p>
       <div className="mt-3 flex gap-2 overflow-x-auto pb-1 no-scrollbar">
         <Chip selected={cat === "All"} onClick={() => setCat("All")}>All</Chip>
         {shopCategories.map((c) => <Chip key={c} selected={cat === c} onClick={() => setCat(c)}>{c}</Chip>)}
       </div>
-      <div className="mt-3">
-        <Segmented label="Sort" value={sort} onChange={setSort} options={["Featured", "Price", "Rating"].map((id) => ({ id, label: id }))} />
+      <div className="mt-3 flex items-center justify-between gap-3">
+        <p className="text-[0.75rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">{list.length} {list.length === 1 ? "piece" : "pieces"}</p>
+        <div className="flex rounded-lg bg-muted p-1" role="tablist" aria-label="Sort">
+          {["Featured", "Price", "Rating"].map((id) => (
+            <button
+              key={id}
+              type="button"
+              role="tab"
+              aria-selected={sort === id}
+              onClick={() => setSort(id)}
+              className={cn("min-h-8 rounded-lg px-2.5 text-[0.75rem] font-semibold", sort === id ? "bg-card text-foreground shadow-card" : "text-muted-foreground")}
+            >
+              {id}
+            </button>
+          ))}
+        </div>
       </div>
       {list.length === 0 ? <EmptyState title="No products" body="Try another category." action="Reset" onAction={() => { setQ(""); setCat("All"); }} /> : (
         <div className="mt-4 grid grid-cols-2 gap-3 pb-4">
