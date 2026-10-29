@@ -1,30 +1,69 @@
 import { useMemo, useState } from "react";
-import { programs, products, shopCategories } from "@/data/content";
-import { AppleMark, Button, Card, Celebration, Chip, EmptyState, Photo, SearchField, Segmented, Stars, SwipeRow, SwitchRow, TextField } from "@/components/ios/ui";
+import { Calendar, Check, Clock, MapPin } from "lucide-react";
+import { ORG, programs, products, shopCategories, specialists, staff } from "@/data/content";
+import { AppleMark, Button, Celebration, Chip, EmptyState, Photo, ProgressBar, SearchField, Segmented, Stars, SwipeRow, SwitchRow, TextArea, TextField } from "@/components/ios/ui";
 import { Page } from "@/components/ios/shell";
 import { money } from "@/lib/haptic";
 import { useGo } from "@/lib/nav";
 import { useApp, type OrderItem } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
+function eventDate(date: string) {
+  const day = new Date(`${date}T12:00:00`);
+  return {
+    month: day.toLocaleDateString("en-US", { month: "short" }),
+    day: day.getDate(),
+    long: day.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" }),
+    short: day.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }),
+  };
+}
+
+function hostOf(id: string) {
+  return [...specialists, ...staff].find((person) => person.id === id);
+}
+
 export function ProgramsScreen() {
   const go = useGo();
   return (
-    <Page title="Programs" large fallback="/more">
-      <div className="space-y-3">
-        {programs.map((program) => (
-          <Card key={program.id} className="overflow-hidden" onClick={() => go(`/programs/${program.id}`)} label={program.title}>
-            <Photo name={program.image} alt="" className="h-32 w-full" />
-            <div className="p-4">
-              <p className="headline">{program.title}</p>
-              <p className="footnote mt-1 text-muted-foreground">{new Date(`${program.date}T12:00:00`).toLocaleDateString("en-US", { weekday: "short", month: "long", day: "numeric" })} · {program.time}</p>
-              <div className="mt-2 flex justify-between">
-                <span className="font-semibold">{program.price === 0 ? "Free" : money(program.price)}</span>
-                <span className="text-link">{program.seats} seats left · Register</span>
-              </div>
-            </div>
-          </Card>
-        ))}
+    <Page title="Programs" fallback="/more">
+      <p className="text-[0.95rem] leading-snug text-muted-foreground">November classes and community events at the Auburn Avenue center. A nickname is enough to hold a seat.</p>
+      <div className="mt-4 space-y-4">
+        {programs.map((program) => {
+          const when = eventDate(program.date);
+          const host = hostOf(program.hostId);
+          const filled = Math.round(((program.total - program.seats) / program.total) * 100);
+          return (
+            <button key={program.id} type="button" onClick={() => go(`/programs/${program.id}`)} className="block w-full overflow-hidden rounded-lg bg-card text-left shadow-card">
+              <span className="relative block h-44">
+                <Photo name={program.image} alt="" className="absolute inset-0 h-full w-full" />
+                <span className="absolute inset-0 bg-gradient-to-t from-[#231f20]/80 via-[#231f20]/10 to-transparent" />
+                <span className="absolute left-3 top-3 flex min-w-12 flex-col items-center rounded-lg bg-white px-2.5 py-1.5 text-[#231f20]">
+                  <span className="text-[0.65rem] font-semibold uppercase tracking-[0.08em]">{when.month}</span>
+                  <span className="text-[1.2rem] font-bold leading-none">{when.day}</span>
+                </span>
+                <span className="absolute right-3 top-3 rounded-lg bg-white/92 px-2.5 py-1 text-[0.75rem] font-semibold text-[#231f20]">{program.price === 0 ? "Free" : money(program.price)}</span>
+                <span className="absolute inset-x-0 bottom-0 p-3.5 text-white">
+                  <span className="block text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-white/80">{program.format}</span>
+                  <span className="mt-0.5 block text-[1.2rem] font-bold leading-tight">{program.title}</span>
+                </span>
+              </span>
+              <span className="block px-4 py-3.5">
+                <span className="block text-[0.95rem] leading-snug text-muted-foreground">{program.blurb}</span>
+                <span className="mt-3 grid grid-cols-2 gap-2 text-[0.8125rem]">
+                  <span className="flex items-center gap-1.5 font-semibold"><Clock size={14} className="text-link" aria-hidden />{program.time}</span>
+                  <span className="flex items-center gap-1.5 font-semibold"><MapPin size={14} className="shrink-0 text-link" aria-hidden />{program.place}</span>
+                </span>
+                <span className="mt-3 block">
+                  <span className="mb-1.5 flex justify-between text-[0.75rem] font-semibold">
+                    <span>{host?.name}</span>
+                    <span className="text-link">{program.seats} seats left</span>
+                  </span>
+                  <ProgressBar value={filled} label={`${program.seats} seats left`} />
+                </span>
+              </span>
+            </button>
+          );
+        })}
       </div>
     </Page>
   );
@@ -34,13 +73,118 @@ export function ProgramDetailScreen({ id }: { id: string }) {
   const program = programs.find((p) => p.id === id);
   const go = useGo();
   if (!program) return <Page title="Program"><EmptyState title="Not listed" body="That class isn’t on the calendar." action="All programs" onAction={() => go("/programs")} /></Page>;
+  const when = eventDate(program.date);
+  const host = hostOf(program.hostId);
+  const filled = Math.round(((program.total - program.seats) / program.total) * 100);
+  const others = programs.filter((item) => item.id !== program.id).slice(0, 3);
   return (
-    <Page title={program.title} footer={<Button onClick={() => go(`/programs/${program.id}/register`)}>Register</Button>}>
-      <div className="-mx-4"><Photo name={program.image} alt="" className="h-52 w-full" /></div>
-      <p className="footnote mt-3 text-muted-foreground">{program.place}</p>
-      <p className="title-2 mt-2">{program.price === 0 ? "Free" : money(program.price)}</p>
-      <p className="body-text mt-2">{program.detail}</p>
-      <p className="footnote mt-3">{program.seats} of {program.total} seats still open.</p>
+    <Page title={program.title} fallback="/programs" footer={<Button onClick={() => go(`/programs/${program.id}/register`)}>{program.price === 0 ? "Register · Free" : `Register · ${money(program.price)}`}</Button>}>
+      <div className="relative h-60 overflow-hidden rounded-lg">
+        <Photo name={program.image} alt="" className="absolute inset-0 h-full w-full" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#231f20] via-[#231f20]/45 to-[#231f20]/15" />
+        <div className="absolute inset-x-0 bottom-0 p-4 text-white">
+          <p className="inline-flex rounded-lg bg-white/92 px-2.5 py-1 text-[0.75rem] font-semibold text-[#231f20]">{when.short} · {program.time}</p>
+          <h2 className="mt-2 text-[1.65rem] font-bold leading-tight">{program.title}</h2>
+          <p className="mt-1 text-[0.95rem] leading-snug text-white/95">{program.blurb}</p>
+        </div>
+      </div>
+
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        {([
+          { icon: Calendar, label: "Date", value: when.long },
+          { icon: Clock, label: "Time", value: `${program.time} – ${program.ends}` },
+          { icon: MapPin, label: "Room", value: program.place },
+          { icon: Check, label: "Admission", value: program.price === 0 ? "Free" : `${money(program.price)} materials` },
+        ] as const).map((fact) => (
+          <div key={fact.label} className="rounded-lg bg-card px-3 py-3 shadow-card">
+            <p className="flex items-center gap-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+              <fact.icon size={13} className="text-link" aria-hidden /> {fact.label}
+            </p>
+            <p className="mt-1 text-[0.92rem] font-semibold leading-snug">{fact.value}</p>
+          </div>
+        ))}
+      </div>
+
+      <section className="mt-3 rounded-lg bg-card p-4 shadow-card">
+        <div className="flex items-center justify-between gap-3">
+          <p className="font-semibold">{program.seats} of {program.total} seats open</p>
+          <p className="text-[0.8125rem] font-semibold text-link">{program.format}</p>
+        </div>
+        <div className="mt-2"><ProgressBar value={filled} label="Seats filled" /></div>
+        <p className="mt-3 text-[0.95rem] leading-snug text-muted-foreground">{ORG.address}, {ORG.city}</p>
+      </section>
+
+      <section className="mt-4">
+        <h2 className="text-[0.75rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">About this event</h2>
+        <p className="mt-2 text-[1.02rem] leading-relaxed">{program.detail}</p>
+      </section>
+
+      <section className="mt-4 rounded-lg bg-primary-50 px-4 py-3.5">
+        <h2 className="text-[0.75rem] font-semibold uppercase tracking-[0.12em] text-link">Who it’s for</h2>
+        <p className="mt-1.5 text-[1.02rem] leading-snug">{program.who}</p>
+      </section>
+
+      {host && (
+        <button type="button" onClick={() => go(host.id.startsWith("sp-") ? `/lawyers/${host.id}` : "/team")} className="mt-4 flex w-full items-center gap-3 rounded-lg bg-card p-3 text-left shadow-card">
+          <Photo name={host.photo} alt="" className="h-14 w-14 rounded-full" />
+          <span className="min-w-0 flex-1">
+            <span className="block text-[0.7rem] font-semibold uppercase tracking-[0.1em] text-muted-foreground">Host</span>
+            <span className="block font-semibold">{host.name}</span>
+            <span className="block text-[0.875rem] text-muted-foreground">{host.role}</span>
+          </span>
+          <span className="text-[0.8125rem] font-semibold text-link">Profile</span>
+        </button>
+      )}
+
+      <section className="mt-4 rounded-lg bg-card p-4 shadow-card">
+        <h2 className="text-[0.75rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">Schedule</h2>
+        <ol className="mt-3 space-y-3">
+          {program.agenda.map((item, i) => (
+            <li key={item.time} className="flex gap-3">
+              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-primary text-[0.85rem] font-bold text-white">{i + 1}</span>
+              <span>
+                <span className="block text-[0.75rem] font-semibold text-link">{item.time}</span>
+                <span className="block font-semibold leading-snug">{item.title}</span>
+              </span>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="mt-4 overflow-hidden rounded-lg bg-card shadow-card">
+        <h2 className="px-4 pt-4 text-[0.75rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">What to know</h2>
+        <ul>
+          {program.bring.map((item) => (
+            <li key={item} className="flex items-center gap-3 px-4 py-3">
+              <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-primary-100 text-link"><Check size={15} strokeWidth={2.5} aria-hidden /></span>
+              <span className="text-[1rem] leading-snug">{item}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="mt-4 rounded-lg bg-card px-4 py-3.5 shadow-card">
+        <h2 className="text-[0.75rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">Questions</h2>
+        <a className="mt-2 flex min-h-11 items-center font-semibold text-link" href={`tel:${ORG.phone.replace(/\D/g, "")}`}>{ORG.phone}</a>
+        <p className="text-[0.875rem] text-muted-foreground">{ORG.email} · {ORG.hours}</p>
+      </section>
+
+      <h2 className="mt-6 text-[0.75rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">More in November</h2>
+      <div className="mt-2 space-y-2">
+        {others.map((item) => {
+          const day = eventDate(item.date);
+          return (
+            <button key={item.id} type="button" onClick={() => go(`/programs/${item.id}`)} className="flex w-full items-center gap-3 rounded-lg bg-card p-3 text-left shadow-card">
+              <Photo name={item.image} alt="" className="h-14 w-14 rounded-lg" />
+              <span className="min-w-0 flex-1">
+                <span className="block truncate font-semibold">{item.title}</span>
+                <span className="block text-[0.8125rem] text-muted-foreground">{day.short} · {item.time}</span>
+              </span>
+              <span className="text-[0.8125rem] font-semibold text-link">{item.price === 0 ? "Free" : money(item.price)}</span>
+            </button>
+          );
+        })}
+      </div>
     </Page>
   );
 }
@@ -51,46 +195,106 @@ export function ProgramRegisterScreen({ id }: { id: string }) {
   const go = useGo();
   const [name, setName] = useState(app.user?.nickname ?? "");
   const [email, setEmail] = useState(app.user?.email ?? "");
+  const [note, setNote] = useState("");
+  const [mode, setMode] = useState(program?.modes[0] ?? "In person");
+  const [care, setCare] = useState(false);
   const [paid, setPaid] = useState(false);
-  if (!program) return <Page title="Register"><EmptyState title="Missing class" body="Go back to the calendar." /></Page>;
+  if (!program) return <Page title="Register"><EmptyState title="Missing class" body="Go back to the calendar." action="All programs" onAction={() => go("/programs")} /></Page>;
+  const when = eventDate(program.date);
   const finish = () => {
-    if (program.price > 0 && !paid) {
-      setPaid(true);
-      return;
-    }
-    app.registerProgram(program.id, name, email);
+    const extra = [mode, care ? "Childcare requested" : "", note.trim()].filter(Boolean).join(" · ");
+    app.registerProgram(program.id, name, email, extra || undefined);
     go(`/ticket/${program.id}`);
   };
   return (
-    <Page title="Register" fallback={`/programs/${id}`}>
-      <p className="headline">{program.title}</p>
+    <Page
+      title="Register"
+      fallback={`/programs/${id}`}
+      footer={<Button onClick={finish}>{program.price === 0 ? "Confirm · Free" : `Confirm · ${money(program.price)}`}</Button>}
+    >
+      <button type="button" onClick={() => go(`/programs/${program.id}`)} className="flex w-full items-center gap-3 rounded-lg bg-card p-3 text-left shadow-card">
+        <Photo name={program.image} alt="" className="h-16 w-16 rounded-lg" />
+        <span className="min-w-0 flex-1">
+          <span className="block text-[0.7rem] font-semibold uppercase tracking-[0.1em] text-muted-foreground">Your event</span>
+          <span className="block font-semibold leading-tight">{program.title}</span>
+          <span className="mt-0.5 block text-[0.8125rem] text-muted-foreground">{when.short} · {program.time} – {program.ends}</span>
+          <span className="block text-[0.8125rem] text-muted-foreground">{program.place} · {program.price === 0 ? "Free" : money(program.price)}</span>
+        </span>
+      </button>
+
+      <h2 className="mt-5 text-[0.75rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">How you’ll join</h2>
+      <div className="mt-2 flex flex-wrap gap-2">
+        {program.modes.map((item) => (
+          <Chip key={item} selected={mode === item} onClick={() => setMode(item)}>{item}</Chip>
+        ))}
+      </div>
+
       <div className="mt-4 space-y-3">
         <TextField label="Name or nickname" value={name} onChange={setName} />
-        <TextField label="Email" value={email} onChange={setEmail} />
-        {program.price > 0 && !paid && (
-          <>
-            <p className="footnote text-muted-foreground">Materials fee {money(program.price)}. Scholarships: write “scholarship” in your name and we’ll follow up. This preview does not charge a card.</p>
-            <button type="button" className="flex min-h-[3.25rem] w-full items-center justify-center gap-2 rounded-xl bg-black font-semibold text-white" onClick={() => setPaid(true)}><AppleMark /> Pay with Apple Pay</button>
-          </>
-        )}
-        {paid && <p className="rounded-xl bg-primary-50 p-3 text-[0.9375rem]">Payment preview accepted.</p>}
-        <Button onClick={finish}>{program.price > 0 && !paid ? "Pay by card preview" : "Confirm registration"}</Button>
+        <TextField label="Email for the ticket" value={email} onChange={setEmail} hint="Saved on this device with your ticket." />
+        <TextArea label="Anything we should prepare?" value={note} onChange={setNote} hint="A scholarship, a seat near the door, or nothing at all." />
       </div>
+
+      {program.childcare && (
+        <div className="mt-3 overflow-hidden rounded-lg bg-card shadow-card">
+          <SwitchRow label="Request childcare" detail="We’ll hold a spot in the next room. No extra form." checked={care} onChange={setCare} />
+        </div>
+      )}
+
+      {program.price > 0 && (
+        <section className="mt-4 rounded-lg bg-card p-4 shadow-card">
+          <p className="font-semibold">Materials fee {money(program.price)}</p>
+          <p className="mt-1 text-[0.9rem] leading-snug text-muted-foreground">Preview only. Nothing is charged. Ask for a scholarship in the note above, or pay at the studio.</p>
+          <button type="button" className="mt-3 flex min-h-[3.25rem] w-full items-center justify-center gap-2 rounded-lg bg-black font-semibold text-white" onClick={() => setPaid(true)}>
+            <AppleMark /> Pay with Apple Pay
+          </button>
+          <button type="button" className="mt-2 min-h-11 w-full font-semibold text-link" onClick={() => setPaid(true)}>Card preview</button>
+          {paid && <p className="mt-2 rounded-lg bg-primary-50 px-3 py-2 text-[0.9rem] font-semibold text-link">Payment preview accepted. Confirm to finish.</p>}
+        </section>
+      )}
     </Page>
   );
 }
 
 export function TicketScreen({ id }: { id: string }) {
   const app = useApp();
+  const go = useGo();
   const program = programs.find((p) => p.id === id);
   const reg = app.registrations.find((r) => r.programId === id);
+  const when = program ? eventDate(program.date) : null;
+  const host = program ? hostOf(program.hostId) : undefined;
   return (
-    <Page title="You’re registered" back={false} footer={<Button onClick={() => app.toast("Saved to this device")}>Save ticket</Button>}>
-      <Celebration image={program?.image || "gallery-workshop"} kicker="You’re registered" title={program?.title ?? "Class"} detail={`${program?.date ?? ""} · ${program?.time ?? ""} · ${program?.place ?? ""}`}>
+    <Page
+      title="You’re registered"
+      back={false}
+      footer={
+        <div className="space-y-2">
+          <Button onClick={() => go("/home")}>Back to home</Button>
+          <Button variant="secondary" onClick={() => app.toast("Saved to this device")}>Save ticket</Button>
+        </div>
+      }
+    >
+      <Celebration image={program?.image || "gallery-workshop"} kicker="You’re registered" title={when?.short ?? "Ticket"} detail={program ? `${program.time} – ${program.ends} · ${program.place}` : ""}>
+        <p className="mt-2 text-[1.15rem] font-bold leading-tight">{program?.title ?? "Class"}</p>
         <p className="mt-3 text-[0.75rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">Ticket code</p>
         <p className="mt-1 text-[1.35rem] font-bold tracking-[0.18em]">{reg?.code ?? "TK-PREVIEW"}</p>
         <Qr code={reg?.code ?? "AEO"} />
+        {reg?.mode && <p className="mt-2 text-[0.85rem] text-muted-foreground">{reg.mode}</p>}
       </Celebration>
+      <div className="mt-3 overflow-hidden rounded-lg bg-card shadow-card">
+        {[
+          ["When", when ? `${when.long}, ${program?.time} – ${program?.ends}` : ""],
+          ["Where", `${program?.place ?? ""} · ${ORG.address}`],
+          ["Host", host?.name ?? "All Eyez Open"],
+          ["Arrive", "Ten minutes early. A nickname is enough at the door."],
+        ].map(([label, value]) => (
+          <p key={label} className="border-b border-divider px-4 py-3 last:border-0">
+            <span className="block text-[0.7rem] font-semibold uppercase tracking-[0.1em] text-muted-foreground">{label}</span>
+            <span className="mt-0.5 block text-[0.95rem] leading-snug">{value}</span>
+          </p>
+        ))}
+      </div>
+      <button type="button" className="mt-3 min-h-11 w-full font-semibold text-link" onClick={() => go("/programs")}>See other events</button>
     </Page>
   );
 }

@@ -92,7 +92,7 @@ export type Order = {
   returnReason?: string;
 };
 
-export type Registration = { id: string; userId: string; programId: string; name: string; email: string; code: string };
+export type Registration = { id: string; userId: string; programId: string; name: string; email: string; code: string; mode?: string };
 export type Question = { id: string; userId: string; name: string; email: string; category: string; question: string; answer?: string; status: "Answered" | "Pending" };
 export type Review = { id: string; name: string; stars: number; title: string; text: string; date: string; verified: boolean; area: string; photo: boolean; userId?: string };
 export type Query = { id: string; name: string; email: string; phone: string; topic: string; message: string; safeCall: boolean; safeText: boolean; status: string };
@@ -581,8 +581,8 @@ function buildApi(state: State, set: Dispatch<SetStateAction<State>>) {
       }));
       toast("Items added to cart");
     },
-    registerProgram: (programId: string, name: string, email: string) => {
-      const reg: Registration = { id: uid("rg"), userId: owner || "guest", programId, name, email, code: uid("TK").slice(0, 8).toUpperCase() };
+    registerProgram: (programId: string, name: string, email: string, mode?: string) => {
+      const reg: Registration = { id: uid("rg"), userId: owner || "guest", programId, name, email, code: uid("TK").slice(0, 8).toUpperCase(), mode };
       set((s) => ({ ...s, registrations: [reg, ...s.registrations] }));
       toast("You're registered");
       return reg;

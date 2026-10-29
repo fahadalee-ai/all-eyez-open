@@ -42,7 +42,7 @@ import {
 } from "@/components/ios/ui";
 import { Page } from "@/components/ios/shell";
 import { shareText } from "@/lib/haptic";
-import { useGo } from "@/lib/nav";
+import { useBack, useGo } from "@/lib/nav";
 import { useApp, type SafetyPlan } from "@/lib/store";
 
 const faqCats = ["About us", "Getting help", "Legal", "Donations", "Privacy & Safety", "Shop & Orders"];
@@ -76,7 +76,7 @@ export function QaScreen() {
 
 export function AskQuestionScreen() {
   const app = useApp();
-  const go = useGo();
+  const back = useBack("/qa");
   const [name, setName] = useState(app.user?.nickname ?? "");
   const [email, setEmail] = useState(app.user?.email ?? "");
   const [category, setCategory] = useState(faqCats[1]);
@@ -89,9 +89,8 @@ export function AskQuestionScreen() {
         <div className="flex flex-wrap gap-2">{faqCats.map((c) => <Chip key={c} selected={category === c} onClick={() => setCategory(c)}>{c}</Chip>)}</div>
         <TextArea label="Question" value={question} onChange={setQuestion} hint="Leave out addresses and case numbers." />
         <Button onClick={() => {
-          if (question.trim().length < 8 || !email.includes("@")) { app.toast("Add an email and a question"); return; }
-          const item = app.askQuestion({ name, email, category, question });
-          go(`/questions/${item.id}`);
+          app.askQuestion({ name, email, category, question });
+          back();
         }}>Send</Button>
       </div>
     </Page>
