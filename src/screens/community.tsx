@@ -9,6 +9,10 @@ import { useGo } from "@/lib/nav";
 import { useApp } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
+function advocateName(name: string) {
+  return `Advocate ${name.replace(/^Advocate\s+/i, "")}`;
+}
+
 export function CommunityScreen() {
   const app = useApp();
   const go = useGo();
@@ -108,7 +112,7 @@ function PostCard({ id }: { id: string }) {
         <span>{post.metoo} Me too</span>
         <span className="inline-flex items-center gap-1"><MessageCircle size={15} /> {post.comments.length}</span>
       </div>
-      {advocate && <p className="bg-primary-50 px-4 py-2 text-[0.8125rem] font-semibold text-link">Advocate {advocate.author.replace(/^Advocate\s+/i, "")} replied · General information, not legal advice</p>}
+      {advocate && <p className="bg-primary-50 px-4 py-2 text-[0.8125rem] font-semibold text-link">{advocateName(advocate.author)} replied · General information, not legal advice</p>}
     </Card>
   );
 }
@@ -152,13 +156,13 @@ export function PostDetailScreen({ id }: { id: string }) {
       <h2 className="mt-6 text-[0.75rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">Advocate responses</h2>
       {lawyers.length === 0 && <p className="mt-2 rounded-lg bg-card px-4 py-3 text-[0.9rem] text-muted-foreground shadow-card">No advocate reply yet.</p>}
       {lawyers.map((c) => {
-        const advocateName = `Advocate ${c.author.replace(/^Advocate\s+/i, "")}`;
+        const name = advocateName(c.author);
         return (
         <article key={c.id} className="mt-2 rounded-lg bg-primary-50 p-4">
           <button type="button" className="flex items-center gap-2.5" onClick={() => go(`/lawyers/${c.authorId}`)}>
             <Avatar name={c.author} photoName={specialists.find((s) => s.id === c.authorId)?.photo} />
             <span className="text-left">
-              <span className="block font-semibold">{advocateName}</span>
+              <span className="block font-semibold">{name}</span>
               <Badge tone="green">{c.role === "lawyer" ? "Verified Attorney" : "Care team"}</Badge>
             </span>
           </button>
@@ -166,7 +170,7 @@ export function PostDetailScreen({ id }: { id: string }) {
           <p className="mt-2 text-[1rem] leading-relaxed">{c.body}</p>
           <p className="mt-2 text-[0.8125rem] font-semibold">General information, not legal advice. Connect with this advocate if you want the next step in private.</p>
           <p className="text-[0.75rem] text-muted-foreground">{c.likes} found this useful · {c.time}</p>
-          <button type="button" className="mt-3 min-h-11 w-full rounded-lg bg-primary text-[0.95rem] font-semibold text-white" onClick={() => go(`/lawyers/${c.authorId}`)}>Connect with {advocateName}</button>
+          <button type="button" className="mt-3 min-h-11 w-full rounded-lg bg-primary text-[0.95rem] font-semibold text-white" onClick={() => go(`/lawyers/${c.authorId}`)}>Connect with {name}</button>
         </article>
         );
       })}
@@ -175,15 +179,12 @@ export function PostDetailScreen({ id }: { id: string }) {
       <div className="mt-2 space-y-2">
       {rest.map((c) => (
         <div key={c.id} className="rounded-lg bg-card p-4 shadow-card">
-          <p className="font-semibold">{c.anonymous ? "Anonymous" : c.author} <span className="font-normal text-muted-foreground">· {c.time}</span></p>
+          <p className="font-semibold">{advocateName(c.anonymous ? "Anonymous" : c.author)} <span className="font-normal text-muted-foreground">· {c.time}</span></p>
           <p className="mt-1 text-[0.95rem] leading-snug">{c.body}</p>
-          <div className="mt-2 flex gap-3">
-            <span className="text-[0.8125rem] text-muted-foreground">Like · {c.likes}</span>
-            <button type="button" className="text-[0.8125rem] font-semibold text-danger" onClick={() => app.report(post.id)}>Report</button>
-          </div>
+          <p className="mt-2 text-[0.8125rem] text-muted-foreground">Like · {c.likes}</p>
           {c.replies?.map((r) => (
             <div key={r.id} className="ml-3 mt-3 border-l-2 border-divider pl-3">
-              <p className="font-semibold">{r.anonymous ? "Anonymous" : r.author}</p>
+              <p className="font-semibold">{advocateName(r.anonymous ? "Anonymous" : r.author)}</p>
               <p className="text-[0.95rem] leading-snug">{r.body}</p>
             </div>
           ))}
