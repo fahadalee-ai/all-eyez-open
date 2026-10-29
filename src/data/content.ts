@@ -345,10 +345,10 @@ export const seedPosts: Post[] = [
     authorId: "anon-1",
     anonymous: true,
     time: "2h ago",
-    category: "Legal",
-    title: "Need help understanding protective orders",
-    body: "I am trying to understand what a protective order can cover and what the courthouse visit is like. I do not want to share my county in public. If you have used the legal clinic, how did the first conversation go?",
-    support: 46,
+    category: "Domestic violence",
+    title: "I left a domestic violence situation and need the next step",
+    body: "I am safe enough to write this. I need to understand protective orders and what a first conversation with an advocate is like. I will not share my county or any details of what happened. How did people here ask for help?",
+    support: 148,
     metoo: 18,
     requestLegal: true,
     resolved: false,
@@ -780,10 +780,10 @@ export const seedPosts: Post[] = [
     authorId: "anon-7",
     anonymous: true,
     time: "5h ago",
-    category: "Legal",
-    title: "Harassment at work, and I do not know what to write down",
-    body: "A coworker keeps commenting on my appearance and standing too close after I asked them to stop. I do not want to name the workplace here. What can a short written note look like, and who at All Eyez Open can explain the next step?",
-    support: 38,
+    category: "Harassment",
+    title: "Harassment will not stop, and I do not know what to write down",
+    body: "Someone keeps commenting on my appearance and standing too close after I asked them to stop. It has happened at work and after I left for the day. I do not want to name the place here. What can a short written note look like, and which advocate can explain the next step?",
+    support: 132,
     metoo: 15,
     requestLegal: true,
     comments: [
@@ -852,7 +852,7 @@ export const seedPosts: Post[] = [
     authorId: "anon-8",
     anonymous: true,
     time: "1d ago",
-    category: "Legal",
+    category: "Harassment",
     title: "Someone will not stop calling after I left",
     body: "I am at a friend’s place tonight and I am safe. The person I left keeps calling from new numbers. I am not going to describe what happened. I want the next step, and I want to hear from people here who asked for help without posting details.",
     support: 72,
@@ -921,7 +921,7 @@ export const seedPosts: Post[] = [
   },
 ];
 
-export const categories = ["Legal", "Housing", "Healing", "Parenting", "Finances", "Safety", "Success Stories"];
+export const categories = ["Domestic violence", "Harassment", "Legal", "Housing", "Healing", "Parenting", "Finances", "Safety", "Success Stories"];
 
 export const programs = [
   {

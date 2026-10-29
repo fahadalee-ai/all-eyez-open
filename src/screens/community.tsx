@@ -20,6 +20,10 @@ export function CommunityScreen() {
   let posts = app.posts.filter((p) => !app.blocked.includes(p.authorId));
   if (cat !== "All") posts = posts.filter((p) => p.category === cat);
   if (q) posts = posts.filter((p) => `${p.title} ${p.body}`.toLowerCase().includes(q.toLowerCase()));
+  if (feed === "Latest") {
+    const rank = (category: string) => (category === "Domestic violence" ? 0 : category === "Harassment" ? 1 : 2);
+    posts = [...posts].sort((a, b) => rank(a.category) - rank(b.category));
+  }
   if (feed === "Popular") posts = [...posts].sort((a, b) => b.support - a.support);
   if (feed === "Following") posts = posts.filter((p) => app.following.includes(p.authorId));
   if (feed === "Legal Q&A") posts = posts.filter((p) => p.category === "Legal" || p.requestLegal);
@@ -78,7 +82,7 @@ function PostCard({ id }: { id: string }) {
   const post = app.posts.find((p) => p.id === id);
   const [reveal, setReveal] = useState(false);
   if (!post) return null;
-  const lawyer = post.comments.some((c) => c.role === "lawyer");
+  const advocate = post.comments.find((c) => c.role === "lawyer" || c.role === "counselor");
   const reported = app.reported.includes(post.id);
   if (reported) return <Card className="p-4"><p className="font-semibold">Content under review</p><p className="mt-1 text-[0.875rem] leading-snug text-muted-foreground">Thanks for the report. This post is hidden while moderators look.</p></Card>;
   return (
@@ -104,7 +108,7 @@ function PostCard({ id }: { id: string }) {
         <span>{post.metoo} Me too</span>
         <span className="inline-flex items-center gap-1"><MessageCircle size={15} /> {post.comments.length}</span>
       </div>
-      {lawyer && <p className="bg-primary-50 px-4 py-2 text-[0.8125rem] font-semibold text-link">Verified reply · General information, not legal advice</p>}
+      {advocate && <p className="bg-primary-50 px-4 py-2 text-[0.8125rem] font-semibold text-link">Advocate {advocate.author.replace(/^Advocate\s+/i, "")} replied · General information, not legal advice</p>}
     </Card>
   );
 }
@@ -145,23 +149,27 @@ export function PostDetailScreen({ id }: { id: string }) {
         <button type="button" aria-label="Report" className="grid h-11 w-11 place-items-center rounded-lg bg-card text-foreground shadow-card" onClick={() => setReport(true)}><Flag size={18} /></button>
       </div>
       {!post.anonymous && <button type="button" className="mt-2 min-h-11 font-semibold text-link" onClick={() => app.toggleFollow(post.authorId)}>{app.following.includes(post.authorId) ? "Following" : "Follow"}</button>}
-      <h2 className="mt-6 text-[0.75rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">Professional responses</h2>
-      {lawyers.length === 0 && <p className="mt-2 rounded-lg bg-card px-4 py-3 text-[0.9rem] text-muted-foreground shadow-card">No professional reply yet.</p>}
-      {lawyers.map((c) => (
+      <h2 className="mt-6 text-[0.75rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">Advocate responses</h2>
+      {lawyers.length === 0 && <p className="mt-2 rounded-lg bg-card px-4 py-3 text-[0.9rem] text-muted-foreground shadow-card">No advocate reply yet.</p>}
+      {lawyers.map((c) => {
+        const advocateName = `Advocate ${c.author.replace(/^Advocate\s+/i, "")}`;
+        return (
         <article key={c.id} className="mt-2 rounded-lg bg-primary-50 p-4">
           <button type="button" className="flex items-center gap-2.5" onClick={() => go(`/lawyers/${c.authorId}`)}>
             <Avatar name={c.author} photoName={specialists.find((s) => s.id === c.authorId)?.photo} />
             <span className="text-left">
-              <span className="block font-semibold">{c.author}</span>
+              <span className="block font-semibold">{advocateName}</span>
               <Badge tone="green">{c.role === "lawyer" ? "Verified Attorney" : "Care team"}</Badge>
             </span>
           </button>
           {c.bar && <p className="mt-2 text-[0.75rem] text-muted-foreground">{c.bar} · {c.jurisdiction}</p>}
           <p className="mt-2 text-[1rem] leading-relaxed">{c.body}</p>
-          <p className="mt-2 text-[0.8125rem] font-semibold">General information, not legal advice.</p>
+          <p className="mt-2 text-[0.8125rem] font-semibold">General information, not legal advice. Connect with this advocate if you want the next step in private.</p>
           <p className="text-[0.75rem] text-muted-foreground">{c.likes} found this useful · {c.time}</p>
+          <button type="button" className="mt-3 min-h-11 w-full rounded-lg bg-primary text-[0.95rem] font-semibold text-white" onClick={() => go(`/lawyers/${c.authorId}`)}>Connect with {advocateName}</button>
         </article>
-      ))}
+        );
+      })}
       <h2 className="mt-6 text-[0.75rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">Community comments</h2>
       {rest.length === 0 && <p className="mt-2 text-[0.9rem] text-muted-foreground">Be the first kind reply.</p>}
       <div className="mt-2 space-y-2">
@@ -260,13 +268,13 @@ export function LawyerScreen({ id }: { id: string }) {
   const go = useGo();
   const app = useApp();
   return (
-    <Page title={person.name} footer={<Button onClick={() => { app.patchConsult({ type: person.role === "Attorney" ? "legal" : "counseling", specialistId: person.id }); go("/consult/mode"); }}>Book Consultation</Button>}>
+    <Page title={`Advocate ${person.name}`} footer={<Button onClick={() => { app.patchConsult({ type: person.role === "Attorney" ? "legal" : "counseling", specialistId: person.id }); go("/consult/mode"); }}>Connect · Book a consult</Button>}>
       <div className="rounded-lg bg-card p-4 shadow-card">
         <div className="flex items-center gap-3">
           <Photo name={person.photo} alt="" className="h-20 w-20 rounded-lg" />
           <div className="min-w-0">
             <Badge tone="green">Verified</Badge>
-            <p className="mt-1 text-[1.25rem] font-bold leading-tight">{person.name}</p>
+            <p className="mt-1 text-[1.25rem] font-bold leading-tight">Advocate {person.name}</p>
             <p className="text-[0.875rem] text-muted-foreground">{person.role} · {person.years} years</p>
           </div>
         </div>

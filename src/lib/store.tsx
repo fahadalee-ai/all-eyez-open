@@ -769,7 +769,7 @@ function mergePosts(saved: Post[] | undefined): Post[] {
     if (!old) return post;
     const known = new Set(post.comments.map((comment) => comment.id));
     const added = old.comments.filter((comment) => !known.has(comment.id));
-    return { ...post, support: old.support, metoo: old.metoo, comments: [...post.comments, ...added] };
+    return { ...post, support: Math.max(post.support, old.support), metoo: Math.max(post.metoo, old.metoo), comments: [...post.comments, ...added] };
   });
   return [...refreshed, ...saved.filter((post) => !seedIds.has(post.id))];
 }
