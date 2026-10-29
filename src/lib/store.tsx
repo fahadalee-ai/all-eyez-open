@@ -761,6 +761,19 @@ function buildApi(state: State, set: Dispatch<SetStateAction<State>>) {
   };
 }
 
+function mergePosts(saved: Post[] | undefined): Post[] {
+  if (!saved?.length) return seedPosts;
+  const seedIds = new Set(seedPosts.map((post) => post.id));
+  const refreshed = seedPosts.map((post) => {
+    const old = saved.find((item) => item.id === post.id);
+    if (!old) return post;
+    const known = new Set(post.comments.map((comment) => comment.id));
+    const added = old.comments.filter((comment) => !known.has(comment.id));
+    return { ...post, support: old.support, metoo: old.metoo, comments: [...post.comments, ...added] };
+  });
+  return [...refreshed, ...saved.filter((post) => !seedIds.has(post.id))];
+}
+
 export function AppProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<State>(seedState);
   const api = useMemo(() => buildApi(state, setState), [state]);
@@ -772,7 +785,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         const parsed = JSON.parse(raw) as Partial<State>;
         const appLock = parsed.settings?.appLock;
         const unlocked = !appLock || sessionStorage.getItem("aeo-unlocked") === "1";
-        setState((s) => ({ ...s, ...parsed, booted: true, disguised: false, toasts: [], offline: !navigator.onLine, unlocked }));
+        setState((s) => ({ ...s, ...parsed, posts: mergePosts(parsed.posts), booted: true, disguised: false, toasts: [], offline: !navigator.onLine, unlocked }));
       } else {
         setState((s) => ({ ...s, booted: true, offline: !navigator.onLine }));
       }
