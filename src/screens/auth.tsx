@@ -40,7 +40,7 @@ export function SplashScreen() {
       <div className="absolute inset-0 bg-gradient-to-b from-[#f8f2fc]/70 via-[#b98adf]/42 to-[#3d1760]/92" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(35,31,32,0.62)_0%,rgba(74,29,114,0.28)_46%,transparent_72%)]" />
       <div className="relative flex flex-1 flex-col items-center justify-center px-6 text-center">
-        <div className="[animation:logo-in_0.9s_cubic-bezier(0.22,1,0.36,1)_both]">
+        <div className="flex w-full justify-center [animation:logo-in_0.9s_cubic-bezier(0.22,1,0.36,1)_both]">
           <Wordmark className="w-[min(92%,360px)]" />
         </div>
         <p className="anim-fade mt-1 max-w-[18rem] text-[1.0625rem] font-medium leading-snug text-white drop-shadow-[0_2px_10px_rgba(35,31,32,0.7)]">
@@ -216,7 +216,6 @@ function LoginForm() {
         <br />
         Advisor view: jordan@alleyezopen.org · Advisor2026
       </p>
-      <p className="rounded-2xl bg-primary-50 px-4 py-3 text-[0.9375rem] leading-snug text-foreground">Your safety matters. Use Quick Exit anytime.</p>
     </AuthShell>
   );
 }

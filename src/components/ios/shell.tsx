@@ -74,7 +74,7 @@ export function MobileRoot({ children }: { children: ReactNode }) {
     };
   }, [path]);
 
-  const hideQuickExit = path === "/" || path === "/onboarding";
+  const hideQuickExit = path === "/" || path === "/onboarding" || path === "/welcome" || path === "/login" || path === "/register" || path === "/verify" || path === "/forgot" || path === "/reset";
   const showTip = app.booted && !app.settings.quickExitSeen && !app.disguised && !app.locked && path !== "/" && !hideQuickExit;
 
   return (
